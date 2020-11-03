@@ -1,0 +1,1166 @@
+{
+	"info": {
+		"_postman_id": "95eae173-fe36-4c8b-9ebe-60bbf38b7b7b",
+		"name": "Proshop MS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Sign up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"ahmad\",\n    \"email\": \"ahmad@example.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign in",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SIgn out (userInfo localstorage cleared)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/profile",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"5f9359bb8cdcec001194100c\",\n    \"name\": \"admin\",\n    \"email\": \"admin@example.com\",\n    \"isAdmin\": true,\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users/profile",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Top products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/products/top",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"top"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Products with pagination",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/products?keyword=&pageNumber=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"products"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": ""
+								},
+								{
+									"key": "pageNumber",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/products?keyword=iphone&pageNumber=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"products"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "iphone"
+								},
+								{
+									"key": "pageNumber",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/products/5f9075db7c2ac74c5d1cda5f",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"5f9075db7c2ac74c5d1cda5f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rating\": \"5\",\n    \"comment\": \"wow....\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/products/5f9075db7c2ac74c5d1cda5f/reviews",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"5f9075db7c2ac74c5d1cda5f",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Payment Paypal",
+					"item": [
+						{
+							"name": "Get paypal config",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/config/paypal",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"config",
+										"paypal"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Paypal logger...",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"events\": [\n        {\n            \"level\": \"info\",\n            \"event\": \"setup_sandbox\",\n            \"payload\": {\n                \"timestamp\": \"1603401155961\",\n                \"referer\": \"localhost:3000\",\n                \"uid\": \"b477ea2bc2_mje6mti6mzu\",\n                \"env\": \"sandbox\"\n            }\n        },\n        {\n            \"level\": \"info\",\n            \"event\": \"setup_sandbox_5_0_180\",\n            \"payload\": {\n                \"timestamp\": \"1603401155962\",\n                \"referer\": \"localhost:3000\",\n                \"uid\": \"b477ea2bc2_mje6mti6mzu\",\n                \"env\": \"sandbox\"\n            }\n        },\n        {\n            \"level\": \"info\",\n            \"event\": \"sdk_client_cache_miss\",\n            \"payload\": {\n                \"timestamp\": \"1603401155962\",\n                \"referer\": \"localhost:3000\",\n                \"uid\": \"b477ea2bc2_mje6mti6mzu\",\n                \"env\": \"sandbox\"\n            }\n        }\n    ],\n    \"meta\": {},\n    \"tracking\": [\n        {\n            \"transition_name\": \"process_js_sdk_init_client\",\n            \"sdk_load_time\": \"3145\",\n            \"sdk_cache\": \"sdk_client_cache_miss\",\n            \"feed_name\": \"payments_sdk\",\n            \"serverside_data_source\": \"checkout\",\n            \"client_id\": \"AebW0SchfPyNohl8YYEBeutavk3oLXH7xlxq34JnZOkv9ELCNxPADPMe_iCwojpYViUeSFkXAjH2Wbe1\",\n            \"page_session_id\": \"b477ea2bc2_mje6mti6mzu\",\n            \"referer_url\": \"localhost:3000\",\n            \"locale\": \"en_US\",\n            \"integration_identifier\": \"AebW0SchfPyNohl8YYEBeutavk3oLXH7xlxq34JnZOkv9ELCNxPADPMe_iCwojpYViUeSFkXAjH2Wbe1\",\n            \"sdk_name\": \"payments_sdk\",\n            \"sdk_version\": \"5.0.180\",\n            \"user_agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36\",\n            \"user_action\": \"commit\",\n            \"context_correlation_id\": \"60246a4264d73\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://www.sandbox.paypal.com/xoplatform/logger/api/logger",
+									"protocol": "https",
+									"host": [
+										"www",
+										"sandbox",
+										"paypal",
+										"com"
+									],
+									"path": [
+										"xoplatform",
+										"logger",
+										"api",
+										"logger"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Paypal checkout",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"purchase_units\": [\n        {\n            \"amount\": {\n                \"currency_code\": \"USD\",\n                \"value\": \"689.99\"\n            }\n        }\n    ],\n    \"application_context\": {\n        \"shipping_preference\": \"GET_FROM_FILE\"\n    },\n    \"intent\": \"CAPTURE\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://www.sandbox.paypal.com/v2/checkout/orders",
+									"protocol": "https",
+									"host": [
+										"www",
+										"sandbox",
+										"paypal",
+										"com"
+									],
+									"path": [
+										"v2",
+										"checkout",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Paypal UpdateClientConfig",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\"query\":\"\\n            mutation UpdateClientConfig(\\n                $orderID : String!,\\n                $fundingSource : ButtonFundingSourceType!,\\n                $integrationArtifact : IntegrationArtifactType!,\\n                $userExperienceFlow : UserExperienceFlowType!,\\n                $productFlow : ProductFlowType!\\n            ) {\\n                updateClientConfig(\\n                    token: $orderID,\\n                    fundingSource: $fundingSource,\\n                    integrationArtifact: $integrationArtifact,\\n                    userExperienceFlow: $userExperienceFlow,\\n                    productFlow: $productFlow\\n                )\\n            }\\n        \",\"variables\":{\"orderID\":\"15G09506NW674654B\",\"fundingSource\":\"paypal\",\"integrationArtifact\":\"PAYPAL_JS_SDK\",\"userExperienceFlow\":\"INCONTEXT\",\"productFlow\":\"SMART_PAYMENT_BUTTONS\"}}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "https://www.sandbox.paypal.com/graphql?UpdateClientConfig",
+									"protocol": "https",
+									"host": [
+										"www",
+										"sandbox",
+										"paypal",
+										"com"
+									],
+									"path": [
+										"graphql"
+									],
+									"query": [
+										{
+											"key": "UpdateClientConfig",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Paypal GetCheckoutDetails",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\"query\":\"\\n            query GetCheckoutDetails($orderID: String!) {\\n                checkoutSession(token: $orderID) {\\n                    cart {\\n                        billingType\\n                        intent\\n                        paymentId\\n                        billingToken\\n                        amounts {\\n                            total {\\n                                currencyValue\\n                                currencyCode\\n                                currencyFormatSymbolISOCurrency\\n                                currencyValue\\n                            }\\n                        }\\n                    }\\n                    flags {\\n                        isChangeShippingAddressAllowed\\n                    }\\n                    payees {\\n                        merchantId\\n                        email {\\n                            stringValue\\n                        }\\n                    }\\n                }\\n            }\\n        \",\"variables\":{\"orderID\":\"15G09506NW674654B\"}}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "https://www.sandbox.paypal.com/graphql?GetCheckoutDetails",
+									"protocol": "https",
+									"host": [
+										"www",
+										"sandbox",
+										"paypal",
+										"com"
+									],
+									"path": [
+										"graphql"
+									],
+									"query": [
+										{
+											"key": "GetCheckoutDetails",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Paypal Capture",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "https://www.sandbox.paypal.com/smart/api/order/15G09506NW674654B/capture",
+									"protocol": "https",
+									"host": [
+										"www",
+										"sandbox",
+										"paypal",
+										"com"
+									],
+									"path": [
+										"smart",
+										"api",
+										"order",
+										"15G09506NW674654B",
+										"capture"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Pay",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"create_time\": \"2020-10-22T21:20:20Z\",\n    \"update_time\": \"2020-10-22T21:21:07Z\",\n    \"id\": \"15G09506NW674654B\",\n    \"intent\": \"CAPTURE\",\n    \"status\": \"COMPLETED\",\n    \"payer\": {\n        \"email_address\": \"sb-whypv3533322@personal.example.com\",\n        \"payer_id\": \"P85E7ZKMCEX86\",\n        \"address\": {\n            \"country_code\": \"ID\"\n        },\n        \"name\": {\n            \"given_name\": \"John\",\n            \"surname\": \"Doe\"\n        }\n    },\n    \"purchase_units\": [\n        {\n            \"reference_id\": \"default\",\n            \"amount\": {\n                \"value\": \"689.99\",\n                \"currency_code\": \"USD\"\n            },\n            \"payee\": {\n                \"email_address\": \"sb-e18g73533327@personal.example.com\",\n                \"merchant_id\": \"R5Z3PSUCQKZ4N\"\n            },\n            \"shipping\": {\n                \"name\": {\n                    \"full_name\": \"John Doe\"\n                },\n                \"address\": {\n                    \"address_line_1\": \"Jl Senopati 1\",\n                    \"admin_area_2\": \"Jakarta\",\n                    \"admin_area_1\": \"Jakarta\",\n                    \"postal_code\": \"12110\",\n                    \"country_code\": \"ID\"\n                }\n            },\n            \"payments\": {\n                \"captures\": [\n                    {\n                        \"status\": \"COMPLETED\",\n                        \"id\": \"2VP87598YP676482L\",\n                        \"final_capture\": true,\n                        \"create_time\": \"2020-10-22T21:21:07Z\",\n                        \"update_time\": \"2020-10-22T21:21:07Z\",\n                        \"amount\": {\n                            \"value\": \"689.99\",\n                            \"currency_code\": \"USD\"\n                        },\n                        \"seller_protection\": {\n                            \"status\": \"ELIGIBLE\",\n                            \"dispute_categories\": [\n                                \"ITEM_NOT_RECEIVED\",\n                                \"UNAUTHORIZED_TRANSACTION\"\n                            ]\n                        },\n                        \"links\": [\n                            {\n                                \"href\": \"https://api.sandbox.paypal.com/v2/payments/captures/2VP87598YP676482L\",\n                                \"rel\": \"self\",\n                                \"method\": \"GET\",\n                                \"title\": \"GET\"\n                            },\n                            {\n                                \"href\": \"https://api.sandbox.paypal.com/v2/payments/captures/2VP87598YP676482L/refund\",\n                                \"rel\": \"refund\",\n                                \"method\": \"POST\",\n                                \"title\": \"POST\"\n                            },\n                            {\n                                \"href\": \"https://api.sandbox.paypal.com/v2/checkout/orders/15G09506NW674654B\",\n                                \"rel\": \"up\",\n                                \"method\": \"GET\",\n                                \"title\": \"GET\"\n                            }\n                        ]\n                    }\n                ]\n            }\n        }\n    ],\n    \"links\": [\n        {\n            \"href\": \"https://api.sandbox.paypal.com/v2/checkout/orders/15G09506NW674654B\",\n            \"rel\": \"self\",\n            \"method\": \"GET\",\n            \"title\": \"GET\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/orders/5f91f5c04779500481248173/pay",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"5f91f5c04779500481248173",
+										"pay"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Create an order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderItems\": [\n        {\n            \"product\": \"5f9075db7c2ac74c5d1cda5e\",\n            \"name\": \"Airpods Wireless\",\n            \"image\": \"/images/airpods.jpg\",\n            \"price\": 89.99,\n            \"countInStock\": 3,\n            \"qty\": 1\n        },\n        {\n            \"product\": \"5f907870444f874c577cc9e4\",\n            \"name\": \"Meja\",\n            \"image\": \"/uploads/image-1603303620278.jpeg\",\n            \"price\": 20,\n            \"countInStock\": 10,\n            \"qty\": 1\n        }\n    ],\n    \"shippingAddress\": {\n        \"address\": \"Jl. Jend. Sudirman 12\",\n        \"city\": \"Jakarta Pusat\",\n        \"postalCode\": \"123123\",\n        \"country\": \"Indonesia\"\n    },\n    \"paymentMethod\": \"PayPal\",\n    \"itemsPrice\": \"109.99\",\n    \"shippingPrice\": \"0.00\",\n    \"taxPrice\": \"16.50\",\n    \"totalPrice\": \"126.49\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/orders/myorders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"myorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get an order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/orders/5f93556c415fca0011fd78c7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"5f93556c415fca0011fd78c7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as deliver",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/orders/5f907aec444f874c577cc9e9/deliver",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"5f907aec444f874c577cc9e9",
+								"deliver"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "ADMIN",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Get users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/users",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update a user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"_id\": \"5f91fafa4779500481248178\",\n    \"name\": \"danu yanu\",\n    \"email\": \"danu@gmail.com\",\n    \"isAdmin\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/users/5f91fafa4779500481248178",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"5f91fafa4779500481248178"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete a user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/users/5f91fafa4779500481248178",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"5f91fafa4779500481248178"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Products",
+					"item": [
+						{
+							"name": "Products with pagination",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/products?keyword=&pageNumber=1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"products"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": ""
+										},
+										{
+											"key": "pageNumber",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get a product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/products/5f9075db7c2ac74c5d1cda5f",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"5f9075db7c2ac74c5d1cda5f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update a product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"_id\": \"5f9075db7c2ac74c5d1cda5e\",\n    \"name\": \"Airpods Wireless\",\n    \"price\": 89.99,\n    \"image\": \"/images/airpods.jpg\",\n    \"brand\": \"Apple\",\n    \"category\": \"Electronics\",\n    \"description\": \"Bluetooth technology lets you connect it with compatible devices wirelessly High-quality AAC audio offers immersive listening experience Built-in microphone allows you to take calls while working\",\n    \"countInStock\": 3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/products/5f9075db7c2ac74c5d1cda5e",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"5f9075db7c2ac74c5d1cda5e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete a product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/products/5f907971444f874c577cc9e8",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"5f907971444f874c577cc9e8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create a product init",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/products",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Upload product image",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data; boundary=----WebKitFormBoundarykX57MuNSGY1lghhc",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/upload",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"upload"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Submit new product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"_id\": \"5f9201114779500481248182\",\n    \"name\": \"Coba produk\",\n    \"price\": \"20\",\n    \"image\": \"/uploads/image-1603404177916.jpg\",\n    \"brand\": \"Sample brand\",\n    \"category\": \"Sample category\",\n    \"description\": \"Sample description\",\n    \"countInStock\": \"10\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/products/5f9201114779500481248182",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"5f9201114779500481248182"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Orders",
+					"item": [
+						{
+							"name": "Get orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/orders",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get an order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/orders/5f91f6354779500481248175",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"5f91f6354779500481248175"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get my notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/notifications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Selamat y \"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/notifications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/notifications/5f97451156985f079e42b376",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"5f97451156985f079e42b376"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -1,0 +1,142 @@
+import mongoose from 'mongoose'
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+
+interface OrderAttrs {
+  user: {
+    _id: string,
+    name: string,
+    email: string,
+  };
+  orderItems: [
+    {
+      name: string,
+      qty: number,
+      image: string,
+      price: number,
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    },
+  ];
+  shippingAddress: {
+    address: string,
+    city: string,
+    postalCode: string,
+    country: string,
+  };
+  paymentMethod: string;
+  paymentResult: {
+    id: string,
+    status: string,
+    update_time: string,
+    email_address: string,
+  };
+  taxPrice: number;
+  shippingPrice: number;
+  totalPrice: number;
+  isPaid: boolean;
+  paidAt: Date;
+  isDelivered: boolean;
+  deliveredAt: Date;
+  status: string;
+  expiresAt: number;
+}
+
+interface OrderDoc extends OrderAttrs, mongoose.Document {}
+
+interface OrderModel extends mongoose.Model<OrderDoc> {
+  build(attrs: OrderAttrs): OrderDoc;
+}
+
+const orderSchema = new mongoose.Schema(
+  {
+    user: {
+      type: {
+        _id: { type: String, required: true },
+        name: { type: String, required: true },
+        email: { type: String, required: true },
+      },
+      required: true,
+    },
+    orderItems: [
+      {
+        name: { type: String, required: true },
+        qty: { type: Number, required: true },
+        image: { type: String, required: true },
+        price: { type: Number, required: true },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: 'Product',
+        },
+      },
+    ],
+    shippingAddress: {
+      address: { type: String, required: true },
+      city: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      country: { type: String, required: true },
+    },
+    paymentMethod: {
+      type: String,
+      required: true,
+    },
+    paymentResult: {
+      id: { type: String },
+      status: { type: String },
+      update_time: { type: String },
+      email_address: { type: String },
+    },
+    taxPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    shippingPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    isPaid: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    paidAt: {
+      type: Date,
+    },
+    isDelivered: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    deliveredAt: {
+      type: Date,
+    },
+    status: {
+      type: String,
+      required: false,
+    },
+    expiresAt: {
+      type: Number,
+      required: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+)
+
+orderSchema.plugin(updateIfCurrentPlugin);
+orderSchema.statics.build = (attrs: OrderAttrs) => {
+  return new Order(attrs);
+};
+
+const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema)
+
+export default Order

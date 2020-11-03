@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-products-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-products
+  template:
+    metadata:
+      labels:
+        app: shop-products
+    spec:
+      containers:
+        - name: shop-products
+          image: tolhah/shop-products:latest
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: shop
+            - name: MONGO_URI
+              value: 'mongodb://shop-products-mongo-srv:27017/shop-products'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-products-srv
+spec:
+  selector:
+    app: shop-products
+  ports:
+    - name: shop-products
+      protocol: TCP
+      port: 5000
+      targetPort: 5000

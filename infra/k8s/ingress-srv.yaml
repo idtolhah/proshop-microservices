@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    # - host: shop.dev
+    - http:
+        paths:
+          - path: /api/users/?(.*)
+            backend:
+              serviceName: shop-users-srv
+              servicePort: 5000
+          - path: /api/products/?(.*)
+            backend:
+              serviceName: shop-products-srv
+              servicePort: 5000
+          - path: /api/upload/?(.*)
+            backend:
+              serviceName: shop-products-srv
+              servicePort: 5000
+          - path: /uploads/?(.*)
+            backend:
+              serviceName: shop-products-srv
+              servicePort: 5000
+          - path: /api/orders/?(.*)
+            backend:
+              serviceName: shop-orders-srv
+              servicePort: 5000
+          - path: /api/config/paypal/?(.*)
+            backend:
+              serviceName: shop-orders-srv
+              servicePort: 5000
+          - path: /api/notifications/?(.*)
+            backend:
+              serviceName: shop-notifications-srv
+              servicePort: 5000

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-orders-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-orders
+  template:
+    metadata:
+      labels:
+        app: shop-orders
+    spec:
+      containers:
+        - name: shop-orders
+          image: tolhah/shop-orders:latest
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: shop
+            - name: MONGO_URI
+              value: 'mongodb://shop-orders-mongo-srv:27017/shop-orders'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-orders-srv
+spec:
+  selector:
+    app: shop-orders
+  ports:
+    - name: shop-orders
+      protocol: TCP
+      port: 5000
+      targetPort: 5000

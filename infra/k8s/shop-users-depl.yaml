@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-users-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-users
+  template:
+    metadata:
+      labels:
+        app: shop-users
+    spec:
+      containers:
+        - name: shop-users
+          image: tolhah/shop-users:latest
+          env:
+            - name: MONGO_URI
+              value: 'mongodb://shop-users-mongo-srv:27017/shop-users'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-users-srv
+spec:
+  selector:
+    app: shop-users
+  ports:
+    - name: shop-users
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
