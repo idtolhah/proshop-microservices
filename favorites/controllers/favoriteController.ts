@@ -26,7 +26,6 @@ const getFavorites = asyncHandler(async (req, res) => {
     favorites.push(item.product)
   });
 
-  console.log('Favorites: ' + JSON.stringify(favorites))
   res.json({ favorites, page, pages: Math.ceil(count / pageSize) })
 })
 
@@ -74,7 +73,6 @@ const toggleFavorite = asyncHandler(async (req, res) => {
         product,
     })
     const createdFavorite = await favorite.save()
-    console.log('Created favorite', createdFavorite)
     res.status(201).json(createdFavorite)
   }
 })

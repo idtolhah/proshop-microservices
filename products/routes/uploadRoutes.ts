@@ -35,7 +35,6 @@ const upload = multer({
 })
 
 router.post('/', upload.single('image'), (req: any, res) => {
-  console.log('Storage: ' + JSON.stringify(storage))
   res.send(`/${req.file.path}`)
 })
 

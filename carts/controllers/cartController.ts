@@ -44,7 +44,6 @@ const addCartItems = asyncHandler(async (req: Request, res: Response) => {
           qty,
       })
       const createdCart = await cart.save()
-      console.log('CREATED CART', createdCart)
       res.status(201).json(createdCart)
     }
 
@@ -105,7 +104,6 @@ const updateCartItems = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const deleteCartItems = asyncHandler(async (req, res) => {
     const cart = await Cart.findById(req.params.id)
-    console.log('cart: ', cart)
 
     if (cart) {
       await cart.remove()

@@ -48,7 +48,6 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
         .then((transaction: { token: any; })=>{
             // transaction token
             let transactionToken = transaction.token;
-            console.log('transactionToken:',transactionToken);
             res.status(200)
             res.render("midtrans.html", { transactionToken });
         })
@@ -59,7 +58,6 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
 // @access  Private
 const acceptPaymentUpdate = asyncHandler(async (req: Request, res: Response) => {
 
-    console.log('request: ', JSON.stringify(req.body))
     const order = await Order.findById(req.body.order_id)
 
     if (order) {

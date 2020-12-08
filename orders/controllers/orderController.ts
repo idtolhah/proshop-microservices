@@ -66,8 +66,6 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
 
     const createdOrder = await order.save()
 
-    console.log('Create Order: ', createdOrder)
-
     // Publish an event saying that an order was created
     new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,

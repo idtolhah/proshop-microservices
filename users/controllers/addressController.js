@@ -156,7 +156,6 @@ const updateUserAddress = asyncHandler(async (req, res) => {
       newAddress.postalCode = postalCode
 
       if(isMain) {
-        console.log('ismain: ', isMain)
         newAddress.isMain = true
         const mainAddress = await Address.findOne({ $and: [
           {'user._id': decoded.id},
@@ -169,7 +168,6 @@ const updateUserAddress = asyncHandler(async (req, res) => {
       }
   
       const updatedAddress = await newAddress.save()
-      console.log('updatedAddress: ', updatedAddress)
       res.json(updatedAddress)
     } else {
       res.status(404)
@@ -189,7 +187,6 @@ const deleteUserAddress = asyncHandler(async (req, res) => {
         {'user._id': decoded.id},
         {'_id': req.params.id},
     ]})
-    console.log('address', address)
 
     if (address) {
       if(address.isMain){

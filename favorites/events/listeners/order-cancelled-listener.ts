@@ -14,7 +14,6 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
         item2.product.countInStock += item.qty
         // const updatedFavorite = await item.save()
         const favorite = new Favorite(item2)
-        console.log('Cancelled New Fav: ' + favorite)
         if (favorite) {
           await favorite.save()
         }

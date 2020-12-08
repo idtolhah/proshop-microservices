@@ -22,7 +22,7 @@ export class ExpirationCompleteListener extends Listener<
       throw new Error('Order not found');
     }
     if (order.status !== OrderStatus.Created) {
-      console.log('Order NOT unpaid')
+      console.log('Order NOT Unpaid')
       return msg.ack();
     }
 

@@ -29,10 +29,8 @@ export class ProductUpdatedListener extends Listener<ProductUpdatedEvent> {
     //       }
     //     }
     //   )
-    //   console.log('Update Many Response: ' + JSON.stringify(res))
     //   msg.ack();
     // } catch (e) { 
-    //   console.log('Error: ' + JSON.stringify(e))
     // }
   }
 }

@@ -26,7 +26,6 @@ const getProducts = asyncHandler(async (req: Request, res: Response) => {
 
   let sortBy = {}
 
-  console.log(req.query.sort)
   if(req.query.sort == 'Terkait')
     sortBy = { createdAt : 1 }
   if(req.query.sort == 'Terbaru')
@@ -42,8 +41,6 @@ const getProducts = asyncHandler(async (req: Request, res: Response) => {
   const products = await Product.find({ "name": {'$regex': `${req.query.keyword}`, '$options': 'i'} }).sort( sortBy )
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-
-  console.log(products)
 
   res.json({ products, page, pages: Math.ceil(count / pageSize) })
 })
@@ -85,8 +82,6 @@ const getMyProducts = asyncHandler(async (req: Request, res: Response) => {
 const getProductById = asyncHandler(async (req: Request, res: Response) => {
   const product = await Product.findById(req.params.id)
 
-  console.log('product: ', product)
-
   if (product) {
     res.json(product)
   } else {
@@ -125,8 +120,6 @@ const createProduct = asyncHandler(async (req: Request, res: Response) => {
     category,
     brand,
   } = req.body
-
-  console.log(JSON.stringify(req.body))
   
   const product = new Product({
     name,

@@ -14,8 +14,6 @@ const getUserStoreMain = asyncHandler(async (req, res) => {
     decoded = jwt.verify(token, process.env.JWT_SECRET)
     
     const store = await Store.findOne({'user._id': decoded.id})
-
-    console.log(store)
   
     if (store) {
       res.json(store)
@@ -40,7 +38,6 @@ const addUserStore = asyncHandler(async (req, res) => {
     const { name, phoneNumber, address, subdistrict, city, province, postalCode } = req.body
   
     const storeExists = await Store.findOne({'user': user})
-    console.log(storeExists)
   
     if (storeExists) {
         res.status(400)
@@ -120,7 +117,6 @@ const updateUserStore = asyncHandler(async (req, res) => {
       newStore.postalCode = postalCode
   
       const updatedStore = await newStore.save()
-      console.log('updatedStore: ', updatedStore)
       res.json(updatedStore)
     } else {
       res.status(404)

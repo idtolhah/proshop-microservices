@@ -52,7 +52,6 @@ export const userAddressDetailsReducer = (state = { user: {} }, action) => {
 }
 
 export const userAddressMainReducer = (state = { user: {} }, action) => {
-  console.log('action: ', action)
   switch (action.type) {
     case USER_ADDRESS_MAIN_REQUEST:
       return { ...state, loading: true }

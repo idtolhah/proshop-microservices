@@ -115,7 +115,6 @@ export const getUserAddressMain = () => async (dispatch, getState) => {
     }
 
     const { data } = await axios.get(`/api/users/address/main`, config)
-    console.log('user address: ', data)
 
     dispatch({
       type: USER_ADDRESS_MAIN_SUCCESS,
