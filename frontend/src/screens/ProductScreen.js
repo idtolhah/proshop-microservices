@@ -12,7 +12,7 @@ import {
 } from '../actions/productActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
 
-const ProductScreen = ({ history, match }) => {
+const ProductScreen = ({ history, location, match }) => {
   const [qty, setQty] = useState(1)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
@@ -31,6 +31,8 @@ const ProductScreen = ({ history, match }) => {
     error: errorProductReview,
   } = productReviewCreate
 
+  const redirect = location.search ? location.search.split('=')[1] : '/'
+
   useEffect(() => {
     if (successProductReview) {
       alert('Review Submitted!')
@@ -42,7 +44,7 @@ const ProductScreen = ({ history, match }) => {
   }, [dispatch, match, successProductReview])
 
   const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}?qty=${qty}`)
+    userInfo ? history.push(`/cart/${match.params.id}?qty=${qty}`) : history.push(`/login?redirect=cart`)
   }
 
   const submitHandler = (e) => {

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-favorites-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-favorites
+  template:
+    metadata:
+      labels:
+        app: shop-favorites
+    spec:
+      containers:
+        - name: shop-favorites
+          image: tolhah/shop-favorites:latest
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: shop
+            - name: MONGO_URI
+              value: 'mongodb://shop-favorites-mongo-srv:27017/shop-favorites'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-favorites-srv
+spec:
+  selector:
+    app: shop-favorites
+  ports:
+    - name: shop-favorites
+      protocol: TCP
+      port: 5000
+      targetPort: 5000

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-favorites-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-favorites-mongo
+  template:
+    metadata:
+      labels:
+        app: shop-favorites-mongo
+    spec:
+      containers:
+        - name: shop-favorites-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-favorites-mongo-srv
+spec:
+  selector:
+    app: shop-favorites-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

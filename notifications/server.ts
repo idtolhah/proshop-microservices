@@ -7,8 +7,14 @@ import { notFound, errorHandler } from './common/middleware/errorMiddleware'
 import { natsWrapper } from './config/nats-wrapper';
 import notificationRoutes from './routes/notificationRoutes'
 import { OrderCreatedListener } from './events/listeners/order-created-listener'
-import { OrderShippedListener } from './events/listeners/order-shipped-listener'
 import { OrderPaidListener } from './events/listeners/order-paid-listener'
+import { OrderProcessedListener } from './events/listeners/order-processed-listener'
+import { OrderShippedListener } from './events/listeners/order-shipped-listener'
+import { OrderReceivedListener } from './events/listeners/order-received-listener'
+import { OrderCancelledListener } from './events/listeners/order-cancelled-listener'
+import { OrderCompletedListener } from './events/listeners/order-completed-listener'
+import { OrderReturnedListener } from './events/listeners/order-returned-listener'
+import cors from 'cors'
 
 const start = async () => {
 
@@ -44,8 +50,13 @@ const start = async () => {
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     new OrderCreatedListener(natsWrapper.client).listen();
-    new OrderShippedListener(natsWrapper.client).listen();
     new OrderPaidListener(natsWrapper.client).listen();
+    new OrderProcessedListener(natsWrapper.client).listen();
+    new OrderShippedListener(natsWrapper.client).listen();
+    new OrderReceivedListener(natsWrapper.client).listen();
+    new OrderCancelledListener(natsWrapper.client).listen();
+    new OrderCompletedListener(natsWrapper.client).listen();
+    new OrderReturnedListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
@@ -57,7 +68,13 @@ const start = async () => {
     console.error(err);
   }
 
+  const corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+
   const app = express()
+  app.use(cors(corsOptions))
 
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))

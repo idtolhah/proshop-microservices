@@ -40,3 +40,27 @@ build:
         manual:
           - src: 'src/**/*.js'
             dest: .
+    - image: tolhah/shop-favorites
+      context: favorites
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.js'
+            dest: .
+    - image: tolhah/shop-carts
+      context: carts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.js'
+            dest: .
+    - image: tolhah/shop-expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .

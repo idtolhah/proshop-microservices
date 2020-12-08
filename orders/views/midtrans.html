@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script 
+      type="text/javascript"
+      src="https://app.sandbox.midtrans.com/snap/snap.js"
+      data-client-key="SB-Mid-client-xQg2V-zmTYK9ohxP"
+    ></script>
+  </head>
+
+  <body>
+    <!-- <button id="pay-button">Pay!</button> -->
+    <script type="text/javascript">
+      // var payButton = document.getElementById('pay-button');
+      var transactionToken = "<%= transactionToken %>";
+      // alert('OK, token: ' + transactionToken)
+      // // For example trigger on button clicked, or any time you need
+      // payButton.addEventListener('click', function () {
+        snap.pay(transactionToken); // Replace it with your transaction token
+      // });
+    </script>
+  </body>
+</html>

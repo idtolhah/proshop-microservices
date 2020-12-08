@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-expiration-redis-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-expiration-redis
+  template:
+    metadata:
+      labels:
+        app: shop-expiration-redis
+    spec:
+      containers:
+        - name: shop-expiration-redis
+          image: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-expiration-redis-srv
+spec:
+  selector:
+    app: shop-expiration-redis
+  ports:
+    - name: db
+      protocol: TCP
+      port: 6379
+      targetPort: 6379

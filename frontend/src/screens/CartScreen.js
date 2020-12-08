@@ -3,21 +3,25 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 import Message from '../components/Message'
-import { addToCart, removeFromCart } from '../actions/cartActions'
+import Paginate from '../components/Paginate'
+import { addToCart, updateCart, removeFromCart, listCarts } from '../actions/cartActions'
 
 const CartScreen = ({ match, location, history }) => {
   const productId = match.params.id
-
+  const pageNumber = match.params.pageNumber || 1
   const qty = location.search ? Number(location.search.split('=')[1]) : 1
 
   const dispatch = useDispatch()
 
-  const cart = useSelector((state) => state.cart)
-  const { cartItems } = cart
+  const cartList = useSelector((state) => state.cartList)
+  const { loading, error, carts, page, pages } = cartList
 
   useEffect(() => {
+    // alert('dispatch!!')
+    dispatch(listCarts(pageNumber))
     if (productId) {
       dispatch(addToCart(productId, qty))
+      history.push('/cart')
     }
   }, [dispatch, productId, qty])
 
@@ -33,13 +37,13 @@ const CartScreen = ({ match, location, history }) => {
     <Row>
       <Col md={8}>
         <h1>Shopping Cart</h1>
-        {cartItems.length === 0 ? (
+        { carts.length === 0 ? (
           <Message>
             Your cart is empty <Link to='/'>Go Back</Link>
           </Message>
         ) : (
           <ListGroup variant='flush'>
-            {cartItems.map((item) => (
+            {carts.map((item) => (
               <ListGroup.Item key={item.product}>
                 <Row>
                   <Col md={2}>
@@ -55,7 +59,7 @@ const CartScreen = ({ match, location, history }) => {
                       value={item.qty}
                       onChange={(e) =>
                         dispatch(
-                          addToCart(item.product, Number(e.target.value))
+                          updateCart(item, Number(e.target.value))
                         )
                       }
                     >
@@ -70,7 +74,7 @@ const CartScreen = ({ match, location, history }) => {
                     <Button
                       type='button'
                       variant='light'
-                      onClick={() => removeFromCartHandler(item.product)}
+                      onClick={() => removeFromCartHandler(item._id)}
                     >
                       <i className='fas fa-trash'></i>
                     </Button>
@@ -78,6 +82,11 @@ const CartScreen = ({ match, location, history }) => {
                 </Row>
               </ListGroup.Item>
             ))}
+            {/* <Paginate
+              pages={pages}
+              page={page}
+              cart={true}
+            /> */}
           </ListGroup>
         )}
       </Col>
@@ -86,11 +95,11 @@ const CartScreen = ({ match, location, history }) => {
           <ListGroup variant='flush'>
             <ListGroup.Item>
               <h2>
-                Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
+                Subtotal ({carts.reduce((acc, item) => acc + item.qty, 0)})
                 items
               </h2>
               $
-              {cartItems
+              {carts
                 .reduce((acc, item) => acc + item.qty * item.price, 0)
                 .toFixed(2)}
             </ListGroup.Item>
@@ -98,7 +107,7 @@ const CartScreen = ({ match, location, history }) => {
               <Button
                 type='button'
                 className='btn-block'
-                disabled={cartItems.length === 0}
+                disabled={carts.length === 0}
                 onClick={checkoutHandler}
               >
                 Proceed To Checkout

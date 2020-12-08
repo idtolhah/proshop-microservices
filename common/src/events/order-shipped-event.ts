@@ -11,10 +11,13 @@ export interface OrderShippedEvent {
       email: string;
     };
     shippingAddress: {
+      name: string;
+      phoneNumber: string;
       address: string;
+      subdistrict: string;
       city: string;
+      province: string;
       postalCode: string;
-      country: string;
     };
     status: OrderStatus;
   };

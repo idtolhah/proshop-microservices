@@ -3,10 +3,16 @@ import jwt from 'jsonwebtoken'
 import asyncHandler from 'express-async-handler'
 import Order from '../models/orderModel'
 import { natsWrapper } from '../config/nats-wrapper';
-import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
-import { OrderShippedPublisher } from '../events/publishers/order-shipped-publisher';
-import { OrderPaidPublisher } from '../events/publishers/order-paid-publisher';
 import { OrderStatus } from '@ta-shop/common';
+// publishers
+import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
+import { OrderPaidPublisher } from '../events/publishers/order-paid-publisher';
+import { OrderProcessedPublisher } from '../events/publishers/order-processed-publisher';
+import { OrderCancelledPublisher } from '../events/publishers/order-cancelled-publisher';
+import { OrderShippedPublisher } from '../events/publishers/order-shipped-publisher';
+import { OrderReceivedPublisher } from '../events/publishers/order-received-publisher';
+import { OrderCompletedPublisher } from '../events/publishers/order-completed-publisher';
+import { OrderReturnedPublisher } from '../events/publishers/order-returned-publisher';
 
 let token: any
 let decoded: any
@@ -60,6 +66,8 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
 
     const createdOrder = await order.save()
 
+    console.log('Create Order: ', createdOrder)
+
     // Publish an event saying that an order was created
     new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,
@@ -108,7 +116,8 @@ const updateOrderToPaid = asyncHandler(async (req: Request, res: Response) => {
         status: req.body.status,
         update_time: req.body.update_time,
         email_address: req.body.payer.email_address,
-      }
+      },
+      status: OrderStatus.Paid,
     });
 
     const updatedOrder = await order.save()
@@ -132,16 +141,83 @@ const updateOrderToPaid = asyncHandler(async (req: Request, res: Response) => {
   }
 })
 
-// @desc    Update order to delivered
-// @route   GET /api/orders/:id/deliver
+// @desc    Update order to processed
+// @route   GET /api/orders/:id/process
 // @access  Private/Admin
-const updateOrderToDelivered = asyncHandler(async (req: Request, res: Response) => {
+const updateOrderToProcessed = asyncHandler(async (req: Request, res: Response) => {
+  const order = await Order.findById(req.params.id)
+
+  if (order) {
+    order.set({
+      processedAt: Date.now(),
+      status: OrderStatus.Processed,
+    });
+
+    const updatedOrder = await order.save()
+    
+    // Publish an event saying that an order was processed
+    new OrderProcessedPublisher(natsWrapper.client).publish({
+      id: order._id,
+      orderItems: order.orderItems,
+      user: order.user,
+      paymentMethod: order.paymentMethod,
+      taxPrice: order.taxPrice,
+      shippingPrice: order.shippingPrice,
+      totalPrice: order.totalPrice,
+      status: OrderStatus.Processed,
+    })
+
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error('Order not found')
+  }
+})
+
+// @desc    Update order to cancelled
+// @route   GET /api/orders/:id/cancel
+// @access  Private/Admin
+const updateOrderToCancelled = asyncHandler(async (req: Request, res: Response) => {
+  const order = await Order.findById(req.params.id)
+
+  if (order) {
+    order.set({
+      cancelledAt: Date.now(),
+      status: OrderStatus.Cancelled,
+    });
+
+    const updatedOrder = await order.save()
+    
+    // Publish an event saying that an order was cancelled
+    new OrderCancelledPublisher(natsWrapper.client).publish({
+      id: order._id,
+      orderItems: order.orderItems,
+      user: order.user,
+      paymentMethod: order.paymentMethod,
+      taxPrice: order.taxPrice,
+      shippingPrice: order.shippingPrice,
+      totalPrice: order.totalPrice,
+      status: OrderStatus.Cancelled,
+    });
+
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error('Order not found')
+  }
+})
+
+// @desc    Update order to shipped
+// @route   GET /api/orders/:id/ship
+// @access  Private/Admin
+const updateOrderToShipped = asyncHandler(async (req: Request, res: Response) => {
   const order = await Order.findById(req.params.id)
 
   if (order) {
     order.set({
       isDelivered: true,
       deliveredAt: Date.now(),
+      shippedAt: Date.now(),
       status: OrderStatus.Shipped,
     });
 
@@ -162,6 +238,94 @@ const updateOrderToDelivered = asyncHandler(async (req: Request, res: Response) 
   }
 })
 
+// @desc    Update order to received
+// @route   GET /api/orders/:id/receive
+// @access  Private/Admin
+const updateOrderToReceived = asyncHandler(async (req: Request, res: Response) => {
+  const order = await Order.findById(req.params.id)
+
+  if (order) {
+    order.set({
+      receivedAt: Date.now(),
+      status: OrderStatus.Received,
+    });
+
+    const updatedOrder = await order.save()
+    
+    // Publish an event saying that an order was shipped
+    new OrderReceivedPublisher(natsWrapper.client).publish({
+      id: order._id,
+      user: order.user,
+      shippingAddress: order.shippingAddress,
+      status: OrderStatus.Received,
+    });
+
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error('Order not found')
+  }
+})
+
+// @desc    Update order to returned
+// @route   GET /api/orders/:id/return
+// @access  Private/Admin
+const updateOrderToReturned = asyncHandler(async (req: Request, res: Response) => {
+  const order = await Order.findById(req.params.id)
+
+  if (order) {
+    order.set({
+      returnedAt: Date.now(),
+      status: OrderStatus.Returned,
+    });
+
+    const updatedOrder = await order.save()
+    
+    // Publish an event saying that an order was shipped
+    new OrderReturnedPublisher(natsWrapper.client).publish({
+      id: order._id,
+      user: order.user,
+      shippingAddress: order.shippingAddress,
+      status: OrderStatus.Received,
+    });
+
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error('Order not found')
+  }
+})
+
+// @desc    Update order to complete
+// @route   GET /api/orders/:id/complete
+// @access  Private/Admin
+const updateOrderToCompleted = asyncHandler(async (req: Request, res: Response) => {
+  const order = await Order.findById(req.params.id)
+
+  if (order) {
+    order.set({
+      completedAt: Date.now(),
+      status: OrderStatus.Completed,
+    });
+
+    const updatedOrder = await order.save()
+    
+    // Publish an event saying that an order was shipped
+    new OrderCompletedPublisher(natsWrapper.client).publish({
+      id: order._id,
+      user: order.user,
+      orderItems: order.orderItems,
+      shippingAddress: order.shippingAddress,
+      status: OrderStatus.Completed,
+    });
+
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error('Order not found')
+  }
+})
+
 // @desc    Get logged in user orders
 // @route   GET /api/orders/myorders
 // @access  Private
@@ -171,6 +335,8 @@ const getMyOrders = asyncHandler(async (req: Request, res: Response) => {
   decoded = jwt.verify(token, process.env.JWT_SECRET!)
 
   const orders = await Order.find({ 'user._id': decoded.id })
+    .sort({ createdAt : -1 })
+
   res.json(orders)
 })
 
@@ -183,6 +349,8 @@ const getMyOrdersByStatus = asyncHandler(async (req: Request, res: Response) => 
   decoded = jwt.verify(token, process.env.JWT_SECRET!)
 
   const orders = await Order.find({ $and: [{'user._id': decoded.id}, {'status': req.params.status}] })
+    .sort({ createdAt : -1 })
+  
   res.json(orders)
 })
 
@@ -198,7 +366,12 @@ export {
   addOrderItems,
   getOrderById,
   updateOrderToPaid,
-  updateOrderToDelivered,
+  updateOrderToProcessed,
+  updateOrderToCancelled,
+  updateOrderToReceived,
+  updateOrderToShipped,
+  updateOrderToReturned,
+  updateOrderToCompleted,
   getMyOrders,
   getMyOrdersByStatus,
   getOrders,

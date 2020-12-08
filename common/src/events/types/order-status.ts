@@ -14,5 +14,5 @@ export enum OrderStatus {
   // 7
   Returned = 'returned',
   // 8
-  Complete = 'complete',
+  Completed = 'completed',
 }

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-carts-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-carts
+  template:
+    metadata:
+      labels:
+        app: shop-carts
+    spec:
+      containers:
+        - name: shop-carts
+          image: tolhah/shop-carts:latest
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: shop
+            - name: MONGO_URI
+              value: 'mongodb://shop-carts-mongo-srv:27017/shop-carts'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-carts-srv
+spec:
+  selector:
+    app: shop-carts
+  ports:
+    - name: shop-carts
+      protocol: TCP
+      port: 5000
+      targetPort: 5000

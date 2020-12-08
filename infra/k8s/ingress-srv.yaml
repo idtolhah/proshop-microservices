@@ -38,3 +38,11 @@ spec:
             backend:
               serviceName: shop-notifications-srv
               servicePort: 5000
+          - path: /api/favorites/?(.*)
+            backend:
+              serviceName: shop-favorites-srv
+              servicePort: 5000
+          - path: /api/carts/?(.*)
+            backend:
+              serviceName: shop-carts-srv
+              servicePort: 5000

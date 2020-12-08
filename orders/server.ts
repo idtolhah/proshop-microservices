@@ -6,6 +6,8 @@ import mongoose from 'mongoose'
 import { notFound, errorHandler } from './common/middleware/errorMiddleware'
 import { natsWrapper } from './config/nats-wrapper';
 import orderRoutes from './routes/orderRoutes'
+import cors from 'cors'
+import { ExpirationCompleteListener } from './events/listeners/expiration-complete-listener'
 
 const start = async () => {
 
@@ -40,6 +42,8 @@ const start = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
+    new ExpirationCompleteListener(natsWrapper.client).listen();
+
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -50,13 +54,20 @@ const start = async () => {
     console.error(err);
   }
 
+  const corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+  
   const app = express()
+  app.use(cors(corsOptions))
 
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
   }
 
   app.use(express.json())
+  app.engine('html', require('ejs').renderFile);
 
   app.use('/api/orders', orderRoutes)
 

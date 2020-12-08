@@ -9,18 +9,27 @@ import { createOrder } from '../actions/orderActions'
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch()
 
-  const cart = useSelector((state) => state.cart)
+  const user = useSelector((state) => state.userAddressMain)
+  const cartList = useSelector((state) => state.cartList)
+  const { userAddress } = user
+  const { carts } = cartList
 
   //   Calculate prices
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2)
   }
 
+  let cart = {
+    cartItems : carts,
+    shippingAddress : userAddress,
+    paymentMethod: JSON.parse(localStorage.getItem('paymentMethod')),
+  }
+  
   cart.itemsPrice = addDecimals(
     cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
   )
   cart.shippingPrice = addDecimals(cart.itemsPrice > 100 ? 0 : 100)
-  cart.taxPrice = addDecimals(Number((0.15 * cart.itemsPrice).toFixed(2)))
+  cart.taxPrice = addDecimals(Number((0.10 * cart.itemsPrice).toFixed(2)))
   cart.totalPrice = (
     Number(cart.itemsPrice) +
     Number(cart.shippingPrice) +
@@ -63,7 +72,7 @@ const PlaceOrderScreen = ({ history }) => {
                 <strong>Address:</strong>
                 {cart.shippingAddress.address}, {cart.shippingAddress.city}{' '}
                 {cart.shippingAddress.postalCode},{' '}
-                {cart.shippingAddress.country}
+                {cart.shippingAddress.province}
               </p>
             </ListGroup.Item>
 

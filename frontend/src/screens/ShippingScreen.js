@@ -1,24 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import FormContainer from '../components/FormContainer'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { saveShippingAddress } from '../actions/cartActions'
+import { getUserAddressMain } from '../actions/userAddressActions'
 
 const ShippingScreen = ({ history }) => {
-  const cart = useSelector((state) => state.cart)
-  const { shippingAddress } = cart
-
-  const [address, setAddress] = useState(shippingAddress.address)
-  const [city, setCity] = useState(shippingAddress.city)
-  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode)
-  const [country, setCountry] = useState(shippingAddress.country)
-
+  
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getUserAddressMain())
+  }, [dispatch])
+
+  const data = useSelector((state) => state.userAddressMain)
+  
+  // return
+  const { userAddress } = data
+
+  const [address, setAddress] = useState(userAddress ? userAddress.address : '')
+  const [city, setCity] = useState(userAddress ? userAddress.city : '')
+  const [postalCode, setPostalCode] = useState(userAddress ? userAddress.postalCode : '')
+  const [province, setProvince] = useState(userAddress ? userAddress.province : '')
 
   const submitHandler = (e) => {
     e.preventDefault()
-    dispatch(saveShippingAddress({ address, city, postalCode, country }))
+    dispatch(saveShippingAddress({ address, city, postalCode, province }))
     history.push('/payment')
   }
 
@@ -34,7 +42,8 @@ const ShippingScreen = ({ history }) => {
             placeholder='Enter address'
             value={address}
             required
-            onChange={(e) => setAddress(e.target.value)}
+            readOnly
+            // onChange={(e) => setAddress(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
@@ -45,7 +54,8 @@ const ShippingScreen = ({ history }) => {
             placeholder='Enter city'
             value={city}
             required
-            onChange={(e) => setCity(e.target.value)}
+            readOnly
+            // onChange={(e) => setCity(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
@@ -56,18 +66,20 @@ const ShippingScreen = ({ history }) => {
             placeholder='Enter postal code'
             value={postalCode}
             required
-            onChange={(e) => setPostalCode(e.target.value)}
+            readOnly
+            // onChange={(e) => setPostalCode(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
-        <Form.Group controlId='country'>
-          <Form.Label>Country</Form.Label>
+        <Form.Group controlId='province'>
+          <Form.Label>Province</Form.Label>
           <Form.Control
             type='text'
-            placeholder='Enter country'
-            value={country}
+            placeholder='Enter province'
+            value={province}
             required
-            onChange={(e) => setCountry(e.target.value)}
+            readOnly
+            // onChange={(e) => setProvince(e.target.value)}
           ></Form.Control>
         </Form.Group>
 

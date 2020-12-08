@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current'
 
 interface OrderAttrs {
   user: {
@@ -13,16 +13,20 @@ interface OrderAttrs {
       qty: number,
       image: string,
       price: number,
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-      },
+      product: string,
+      // {
+      //   type: mongoose.Schema.Types.ObjectId,
+      // },
     },
   ];
   shippingAddress: {
+    name: string,
+    phoneNumber: string,
     address: string,
+    subdistrict: string,
     city: string,
+    province: string,
     postalCode: string,
-    country: string,
   };
   paymentMethod: string;
   paymentResult: {
@@ -35,14 +39,24 @@ interface OrderAttrs {
   shippingPrice: number;
   totalPrice: number;
   isPaid: boolean;
-  paidAt: Date;
   isDelivered: boolean;
+
+  paidAt: Date;
   deliveredAt: Date;
-  status: string;
+  processedAt: Date;
+  cancelledAt: Date;
+  shippedAt: Date;
+  receivedAt: Date;
+  returnedAt: Date;
+  completedAt: Date;
   expiresAt: number;
+  
+  status: string;
 }
 
-interface OrderDoc extends OrderAttrs, mongoose.Document {}
+interface OrderDoc extends OrderAttrs, mongoose.Document {
+  _id: string
+}
 
 interface OrderModel extends mongoose.Model<OrderDoc> {
   build(attrs: OrderAttrs): OrderDoc;
@@ -58,35 +72,59 @@ const orderSchema = new mongoose.Schema(
       },
       required: true,
     },
-    orderItems: [
+    orderItems: {type: [
       {
         name: { type: String, required: true },
         qty: { type: Number, required: true },
         image: { type: String, required: true },
         price: { type: Number, required: true },
         product: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: String,
           required: true,
-          ref: 'Product',
+          // ref: 'Product',
         },
       },
-    ],
-    shippingAddress: {
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      postalCode: { type: String, required: true },
-      country: { type: String, required: true },
-    },
+    ]},
+    shippingAddress: {type: {
+      name: {
+        type: String,
+        required: false,
+      },
+      phoneNumber: {
+        type: String,
+        required: false,
+      },
+      address: {
+        type: String,
+        required: true,
+      },
+      subdistrict: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      province: {
+        type: String,
+        required: true,
+      },
+      postalCode: {
+        type: String,
+        required: false,
+      },
+    }},
     paymentMethod: {
       type: String,
       required: true,
     },
-    paymentResult: {
+    paymentResult: {type: {
       id: { type: String },
       status: { type: String },
       update_time: { type: String },
       email_address: { type: String },
-    },
+    }},
     taxPrice: {
       type: Number,
       required: true,
@@ -118,6 +156,24 @@ const orderSchema = new mongoose.Schema(
     deliveredAt: {
       type: Date,
     },
+    processedAt: {
+      type: Date,
+    },
+    cancelledAt: {
+      type: Date,
+    },
+    shippedAt: {
+      type: Date,
+    },
+    receivedAt: {
+      type: Date,
+    },
+    returnedAt: {
+      type: Date,
+    },
+    completedAt: {
+      type: Date,
+    },
     status: {
       type: String,
       required: false,
@@ -134,9 +190,8 @@ const orderSchema = new mongoose.Schema(
 
 orderSchema.plugin(updateIfCurrentPlugin);
 orderSchema.statics.build = (attrs: OrderAttrs) => {
-  return new Order(attrs);
-};
-
+  return new Order(attrs)
+}
 const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema)
 
 export default Order

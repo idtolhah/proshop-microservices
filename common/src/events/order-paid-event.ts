@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import { Subjects } from './subjects';
 import { OrderStatus } from './types/order-status';
 
@@ -11,9 +10,10 @@ export interface OrderPaidEvent {
       qty: number;
       image: string;
       price: number;
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-      };
+      product: string;
+      // {
+      //   type: mongoose.Schema.Types.ObjectId,
+      // };
     }];
     user: {
       _id: string;

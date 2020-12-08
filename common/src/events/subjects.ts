@@ -4,9 +4,13 @@ export enum Subjects {
   ProductUpdated = 'product:updated',
   // Order
   OrderCreated = 'order:created',
-  OrderCancelled = 'order:cancelled',
   OrderPaid = 'order:paid',
+  OrderProcessed = 'order:processed',
   OrderShipped = 'order:shipped',
+  OrderReceived = 'order:received',
+  OrderCompleted = 'order:completed',
+  OrderCancelled = 'order:cancelled',
+  OrderReturned = 'order:returned',
   // Expiration
   ExpirationComplete = 'expiration:complete',
   // Payment

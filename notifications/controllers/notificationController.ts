@@ -11,14 +11,15 @@ let decoded: any
 const getNotifications = asyncHandler(async (req, res) => {
   token = req.headers.authorization!.split(' ')[1]
   decoded = jwt.verify(token, process.env.JWT_SECRET!)
-  const pageSize = 5
+  
+  const pageSize = 12
   const page = Number(req.query.pageNumber) || 1
 
   const count = await Notification.countDocuments()
-  console.log('ID: ', decoded.id)
   const notifications = await Notification.find({ 'user._id': decoded.id })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
+    .sort({ createdAt : -1 })
 
   res.json({ notifications, page, pages: Math.ceil(count / pageSize) })
 })

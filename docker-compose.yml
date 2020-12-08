@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  registry:
+    image: registry:2
+    restart: always
+    ports:
+    - "5000:5000"
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      REGISTRY_HTTP_TLS_CERTIFICATE: /opt/certs/ca.crt
+      REGISTRY_HTTP_TLS_KEY: /opt/certs/ca.key
+    volumes:
+      - ./data:/data
+      - ./certs:/opt/certs

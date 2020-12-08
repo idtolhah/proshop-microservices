@@ -12,7 +12,11 @@ import {
   productTopRatedReducer,
 } from './reducers/productReducers'
 // import CART reducer
-import { cartReducer } from './reducers/cartReducers'
+import { 
+  cartListReducer,
+  cartCreateReducer,
+  cartDeleteReducer,
+} from './reducers/cartReducers'
 // import USER reducers
 import {
   userLoginReducer,
@@ -23,6 +27,15 @@ import {
   userDeleteReducer,
   userUpdateReducer,
 } from './reducers/userReducers'
+// import USER ADDRESS reducers
+import {
+  userAddressCreateReducer,
+  userAddressDeleteReducer,
+  userAddressDetailsReducer,
+  userAddressMainReducer,
+  userAddressListReducer,
+  userAddressUpdateReducer,
+} from './reducers/userAddressReducers'
 // import ORDER reducers
 import {
   orderCreateReducer,
@@ -44,7 +57,11 @@ const reducer = combineReducers({
   productUpdate: productUpdateReducer,
   productReviewCreate: productReviewCreateReducer,
   productTopRated: productTopRatedReducer,
-  cart: cartReducer,
+  
+  cartList: cartListReducer,
+  cartCreate: cartCreateReducer,
+  cartDelete: cartDeleteReducer,
+  
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
@@ -52,6 +69,14 @@ const reducer = combineReducers({
   userList: userListReducer,
   userDelete: userDeleteReducer,
   userUpdate: userUpdateReducer,
+
+  userAddressCreate: userAddressCreateReducer,
+  userAddressDetails: userAddressDetailsReducer,
+  userAddressMain: userAddressMainReducer,
+  userAddressList: userAddressListReducer,
+  userAddressUpdate: userAddressUpdateReducer,
+  userAddressDelete: userAddressDeleteReducer,
+  
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
   orderPay: orderPayReducer,
@@ -60,23 +85,24 @@ const reducer = combineReducers({
   orderList: orderListReducer,
 })
 
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
-  : []
+// const cartItemsFromStorage = localStorage.getItem('cartItems')
+//   ? JSON.parse(localStorage.getItem('cartItems'))
+//   : []
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
   : null
 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {}
+// const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+//   ? JSON.parse(localStorage.getItem('shippingAddress'))
+//   : {}
 // inisialisasi state AWAL
 const initialState = {
-  cart: {
-    cartItems: cartItemsFromStorage,
-    shippingAddress: shippingAddressFromStorage,
-  },
+  // cart: {
+    // cartItems: cartItemsFromStorage,
+    // shippingAddress: shippingAddressFromStorage,
+    // paymentMethod: JSON.parse(localStorage.getItem('paymentMethod'))
+  // },
   userLogin: { userInfo: userInfoFromStorage },
 }
 // optional middleware yg dimasukkan ke store

@@ -4,7 +4,7 @@ import {
   getNotifications,
   deleteNotification,
 } from '../controllers/notificationController'
-import { protect, admin } from '../common/middleware/authMiddleware'
+import { protect } from '../common/middleware/authMiddleware'
 
 router
   .route('/').get(protect, getNotifications)
