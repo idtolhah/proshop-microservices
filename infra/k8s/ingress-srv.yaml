@@ -18,6 +18,10 @@ spec:
             backend:
               serviceName: shop-products-srv
               servicePort: 5000
+          - path: /api/categories/?(.*)
+            backend:
+              serviceName: shop-products-srv
+              servicePort: 5000
           - path: /api/upload/?(.*)
             backend:
               serviceName: shop-products-srv

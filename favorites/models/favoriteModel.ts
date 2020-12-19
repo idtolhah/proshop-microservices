@@ -4,7 +4,12 @@ import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 interface UserAttrs {
   _id: string,
   storeName: string,
-  storeAddress: string,
+  phoneNumber: string,
+  address: string,
+  subdistrict: string,
+  city: string,
+  province: string,
+  postalCode: string,
 }
 
 interface ReviewAttrs {
@@ -47,7 +52,12 @@ const userSchema = new mongoose.Schema(
   {
     _id: { type: String },
     storeName: { type: String },
-    storeAddress: { type: String },
+    phoneNumber: { type: String },
+    address: { type: String },
+    subdistrict: { type: String },
+    city: { type: String },
+    province: { type: String },
+    postalCode: { type: String },
   }
 )
 

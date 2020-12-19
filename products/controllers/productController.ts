@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import asyncHandler from 'express-async-handler'
 import Product from '../models/productModel'
 import { ProductUpdatedPublisher } from '../events/publishers/product-updated-publisher';
+import { ObjectId} from 'mongodb'
 
 let token: any
 let decoded: any
@@ -14,15 +15,6 @@ let decoded: any
 const getProducts = asyncHandler(async (req: Request, res: Response) => {
   const pageSize = 6
   const page = Number(req.query.pageNumber) || 1
-
-  // const keyword = req.query.keyword
-  //   ? {
-  //       name: {
-  //         $regex: req.query.keyword,
-  //         $options: 'i',
-  //       },
-  //     }
-  // : {}
 
   let sortBy = {}
 
@@ -37,16 +29,67 @@ const getProducts = asyncHandler(async (req: Request, res: Response) => {
   if(req.query.sort == 'HargaDesc')
     sortBy = { price : -1 }
 
-  const count = await Product.countDocuments({ "name": {'$regex': `${req.query.keyword}`, '$options': 'i'} })
-  const products = await Product.find({ "name": {'$regex': `${req.query.keyword}`, '$options': 'i'} }).sort( sortBy )
+  let query: any = { "name": {'$regex': `${req.query.keyword}`, '$options': 'i'} }
+
+  if(req.query.category != '' && req.query.category != undefined) {
+    query = {
+      $and: [
+        { "name": {'$regex': `${req.query.keyword}`, '$options': 'i'} }, 
+        { "category": `${req.query.category}` }
+      ]
+    }
+  }
+
+  const count = await Product.countDocuments(query)
+  const products = await Product.find(query).sort(sortBy)
     .limit(pageSize)
     .skip(pageSize * (page - 1))
 
   res.json({ products, page, pages: Math.ceil(count / pageSize) })
 })
 
+// @desc    Fetch all products favorited by user
+// @route   GET /api/products/favorited
+// @access  Public
+const getProductsFavorited = asyncHandler(async (req: Request, res: Response) => {
+  const pageSize = 6
+  const page = Number(req.query.pageNumber) || 1
+
+  let sortBy = {createdAt : -1}
+  
+  if(req.query.productIds){
+    const temp = req.query.productIds.toString().split(',');
+    let productIds: any[] = []
+    let count = 0
+    let products: any[] = []
+    
+    if(temp.length > 0){
+      temp.forEach(item => {
+        const _id: any = new ObjectId(item)
+        productIds.push({_id})
+      });
+
+      const query = { '$and' : 
+        [
+          { "name": {'$regex': `${req.query.keyword}`, '$options': 'i'} },
+          { "$or" : productIds }
+        ]
+      }
+
+      count = await Product.countDocuments(query)
+      products = await Product.find(query).sort( sortBy )
+        .limit(pageSize)
+        .skip(pageSize * (page - 1))
+    }
+
+    console.log('products: ' + JSON.stringify(products))
+
+    res.json({ products, page, pages: Math.ceil(count / pageSize) })
+  }
+})
+
 // @desc    Fetch all my products
-// @route   GET /api/myproducts
+// @route   GET /api/products/myproducts
 // @access  Public
 const getMyProducts = asyncHandler(async (req: Request, res: Response) => {
   token = req.headers.authorization!.split(' ')[1]
@@ -65,11 +108,15 @@ const getMyProducts = asyncHandler(async (req: Request, res: Response) => {
     : {}
 
   const count = await Product.countDocuments({ $and: [{'user._id': decoded.id}, 
-    // {'status': req.params.status}
+    {'status': `${req.query.status}`}
   ] })
-  const products = await Product.find({ $and: [{'user._id': decoded.id}
-    // , {'status': req.params.status}
-  ] })
+  
+  const products = await Product.find({ 
+    $and: [
+        { 'user._id': decoded.id }, 
+        { 'status': `${req.query.status}` }
+    ]})
+    .sort({ 'createdAt': -1 })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
 
@@ -117,8 +164,9 @@ const createProduct = asyncHandler(async (req: Request, res: Response) => {
     price,
     countInStock,
     description,
-    category,
+    // category,
     brand,
+    userStore,
   } = req.body
   
   const product = new Product({
@@ -126,14 +174,26 @@ const createProduct = asyncHandler(async (req: Request, res: Response) => {
     price,
     countInStock,
     description,
-    category,
+    // category,
     brand,
     image: '/images/sample.jpg',
-    user: { _id: decoded.id, storeName: decoded.name, storeAddress: '' },
+    user: { _id: decoded.id, 
+      storeName: userStore.name, 
+      phoneNumber: userStore.phoneNumber,
+      address: userStore.address,
+      subdistrict: userStore.subdistrict,
+      city: userStore.city,
+      province: userStore.province,
+      postalCode: userStore.postalCode,
+      expoPushToken: decoded.expoPushToken,
+    },
   })
+
+  console.log('product: ' + product)
   
   if (product) {
     const createdProduct = await product.save()
+    console.log('created product: ' + createdProduct)
     res.status(201).json(createdProduct)
   }
 })
@@ -235,6 +295,7 @@ const getTopProducts = asyncHandler(async (req: Request, res: Response) => {
 
 export {
   getProducts,
+  getProductsFavorited,
   getMyProducts,
   getProductById,
   deleteProduct,

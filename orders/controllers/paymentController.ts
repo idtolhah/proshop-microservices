@@ -89,6 +89,7 @@ const acceptPaymentUpdate = asyncHandler(async (req: Request, res: Response) => 
             id: order._id,
             orderItems: order.orderItems,
             user: order.user,
+            seller: order.seller,
             paymentMethod: order.paymentMethod,
             taxPrice: order.taxPrice,
             shippingPrice: order.shippingPrice,

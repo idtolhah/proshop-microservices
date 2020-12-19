@@ -1,11 +1,18 @@
 import mongoose from 'mongoose'
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current'
+import { CategoryDoc } from './categoryModel'
 
 // Attributes
 interface UserAttrs {
   _id: string,
   storeName: string,
-  storeAddress: string,
+  phoneNumber: string,
+  address: string,
+  subdistrict: string,
+  city: string,
+  province: string,
+  postalCode: string,
+  expoPushToken: string,
 }
 
 interface ReviewAttrs {
@@ -20,7 +27,7 @@ interface ProductAttrs {
   name: string,
   image: string,
   brand: string,
-  category: string,
+  category: CategoryDoc,
   description: string,
   reviews: [ReviewAttrs],
   rating: number,
@@ -44,7 +51,13 @@ const userSchema = new mongoose.Schema(
   {
     _id: { type: String },
     storeName: { type: String },
-    storeAddress: { type: String },
+    phoneNumber: { type: String },
+    address: { type: String },
+    subdistrict: { type: String },
+    city: { type: String },
+    province: { type: String },
+    postalCode: { type: String },
+    expoPushToken: { type: String }
   }
 )
 
@@ -73,8 +86,9 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      default: mongoose.Types.ObjectId('5f9075db7c2ac74c5d1cd444'),
     },
     description: {
       type: String,

@@ -58,7 +58,7 @@ const start = async () => {
     new OrderCompletedListener(natsWrapper.client).listen();
     new OrderReturnedListener(natsWrapper.client).listen();
 
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGO_URI!, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
@@ -74,10 +74,10 @@ const start = async () => {
   }
 
   const app = express()
-  app.use(cors(corsOptions))
+  // app.use(cors(corsOptions))
 
   if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'))
+    // app.use(morgan('dev'))
   }
 
   app.use(express.json())

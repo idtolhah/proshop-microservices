@@ -27,6 +27,7 @@ export class ExpirationCompleteListener extends Listener<
     }
 
     order.set({
+      cancelledAt: Date.now(),
       status: OrderStatus.Cancelled,
     });
     await order.save();
@@ -34,6 +35,7 @@ export class ExpirationCompleteListener extends Listener<
       id: order._id,
       orderItems: order.orderItems,
       user: order.user,
+      seller: order.seller,
       paymentMethod: order.paymentMethod,
       taxPrice: order.taxPrice,
       shippingPrice: order.shippingPrice,

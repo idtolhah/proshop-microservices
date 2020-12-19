@@ -6,6 +6,18 @@ interface OrderAttrs {
     _id: string,
     name: string,
     email: string,
+    expoPushToken: string,
+  };
+  seller: {
+    _id: string,
+    storeName: string,
+    phoneNumber: string,
+    address: string,
+    subdistrict: string,
+    city: string,
+    province: string,
+    postalCode: string,
+    expoPushToken: string,
   };
   orderItems: [
     {
@@ -14,9 +26,6 @@ interface OrderAttrs {
       image: string,
       price: number,
       product: string,
-      // {
-      //   type: mongoose.Schema.Types.ObjectId,
-      // },
     },
   ];
   shippingAddress: {
@@ -50,6 +59,10 @@ interface OrderAttrs {
   returnedAt: Date;
   completedAt: Date;
   expiresAt: number;
+
+  receiptNumber: string;
+  cancelReason: string;
+  returnReason: string;
   
   status: string;
 }
@@ -69,8 +82,22 @@ const orderSchema = new mongoose.Schema(
         _id: { type: String, required: true },
         name: { type: String, required: true },
         email: { type: String, required: true },
+        expoPushToken: { type: String },
       },
       required: true,
+    },
+    seller: {
+      type: {
+        _id: { type: String },
+        storeName: { type: String },
+        phoneNumber: { type: String },
+        address: { type: String },
+        subdistrict: { type: String },
+        city: { type: String },
+        province: { type: String },
+        postalCode: { type: String },
+        expoPushToken: {type: String },
+      },
     },
     orderItems: {type: [
       {
@@ -78,43 +105,41 @@ const orderSchema = new mongoose.Schema(
         qty: { type: Number, required: true },
         image: { type: String, required: true },
         price: { type: Number, required: true },
-        product: {
-          type: String,
-          required: true,
-          // ref: 'Product',
-        },
+        product: { type: String, required: true },
       },
     ]},
-    shippingAddress: {type: {
-      name: {
-        type: String,
-        required: false,
-      },
-      phoneNumber: {
-        type: String,
-        required: false,
-      },
-      address: {
-        type: String,
-        required: true,
-      },
-      subdistrict: {
-        type: String,
-        required: true,
-      },
-      city: {
-        type: String,
-        required: true,
-      },
-      province: {
-        type: String,
-        required: true,
-      },
-      postalCode: {
-        type: String,
-        required: false,
-      },
-    }},
+    shippingAddress: { 
+      type: {
+        name: {
+          type: String,
+          required: false,
+        },
+        phoneNumber: {
+          type: String,
+          required: false,
+        },
+        address: {
+          type: String,
+          required: true,
+        },
+        subdistrict: {
+          type: String,
+          required: true,
+        },
+        city: {
+          type: String,
+          required: true,
+        },
+        province: {
+          type: String,
+          required: true,
+        },
+        postalCode: {
+          type: String,
+          required: false,
+        },
+      }
+    },
     paymentMethod: {
       type: String,
       required: true,
@@ -173,6 +198,15 @@ const orderSchema = new mongoose.Schema(
     },
     completedAt: {
       type: Date,
+    },
+    receiptNumber: {
+      type: String,
+    },
+    cancelReason: {
+      type: String,
+    },
+    returnReason: {
+      type: String,
     },
     status: {
       type: String,

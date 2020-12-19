@@ -16,6 +16,18 @@ export interface OrderCompletedEvent {
       _id: string;
       name: string;
       email: string;
+      expoPushToken: string,
+    };
+    seller: {
+      _id: string;
+      storeName: string;
+      phoneNumber: string;
+      address: string;
+      subdistrict: string;
+      city: string;
+      province: string;
+      postalCode: string;
+      expoPushToken: string,
     };
     shippingAddress: {
       name: string;

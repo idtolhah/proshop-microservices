@@ -13,6 +13,7 @@ import {
   updateOrderToCompleted,
   updateOrderToReturned,
   updateOrderToCancelled,
+  getMyStoreOrdersByStatus,
 } from '../controllers/orderController'
 import { 
   requestToken,
@@ -24,6 +25,7 @@ import { protect, admin } from '../common/middleware/authMiddleware'
 router.route('/').post(protect, addOrderItems).get(protect, admin, getOrders)
 router.route('/myorders').get(protect, getMyOrders)
 router.route('/myorders/:status').get(protect, getMyOrdersByStatus)
+router.route('/mystoreorders/:status').get(protect, getMyStoreOrdersByStatus)
 router.route('/:id').get(protect, getOrderById)
 
 router.route('/:id/process').put(protect, updateOrderToProcessed)

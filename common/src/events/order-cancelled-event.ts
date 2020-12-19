@@ -11,14 +11,23 @@ export interface OrderCancelledEvent {
       image: string;
       price: number;
       product: string;
-      // {
-      //   type: mongoose.Schema.Types.ObjectId,
-      // };
     }];
     user: {
       _id: string;
       name: string;
       email: string;
+      expoPushToken: string,
+    };
+    seller: {
+      _id: string;
+      storeName: string;
+      phoneNumber: string;
+      address: string;
+      subdistrict: string;
+      city: string;
+      province: string;
+      postalCode: string;
+      expoPushToken: string,
     };
     paymentMethod: string;
     taxPrice: number;

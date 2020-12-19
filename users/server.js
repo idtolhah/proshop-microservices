@@ -18,10 +18,10 @@ const corsOptions = {
 
 const app = express()
 
-app.use(cors(corsOptions))
+// app.use(cors(corsOptions))
 
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'))
+  // app.use(morgan('dev'))
 }
 
 app.use(express.json())

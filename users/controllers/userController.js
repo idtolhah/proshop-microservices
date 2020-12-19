@@ -10,17 +10,24 @@ let decoded
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body
+  const { email, password, expoPushToken } = req.body
 
   const user = await User.findOne({ email })
 
   if (user && (await user.matchPassword(password))) {
+
+    if(!user.expoPushToken || user.expoPushToken == '') {
+      user.expoPushToken = expoPushToken
+      await user.save()
+    }
+    
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id, user.isAdmin, user.name, user.email),
+      token: generateToken(user._id, user.isAdmin, user.name, user.email, user.expoPushToken),
+      expoPushToken: user.expoPushToken || '',
     })
   } else {
     res.status(401)
@@ -32,7 +39,7 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body
+  const { name, email, password, expoPushToken } = req.body
 
   const userExists = await User.findOne({ email })
 
@@ -45,6 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
+    expoPushToken,
   })
 
   if (user) {

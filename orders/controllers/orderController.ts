@@ -24,6 +24,7 @@ const EXPIRATION_WINDOW_SECONDS = 1 * 60;
 const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
   const {
     orderItems,
+    seller,
     shippingAddress,
     paymentMethod,
     itemsPrice,
@@ -49,11 +50,13 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
       _id: decoded.id,
       name: decoded.name,
       email: decoded.email,
+      expoPushToken: decoded.expoPushToken,
     }
 
     const order = new Order({
       orderItems,
       user,
+      seller,
       shippingAddress,
       paymentMethod,
       itemsPrice,
@@ -68,9 +71,10 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
 
     // Publish an event saying that an order was created
     new OrderCreatedPublisher(natsWrapper.client).publish({
-      id: order.id,
+      id: order.id || '',
       orderItems,
       user,
+      seller,
       shippingAddress,
       paymentMethod,
       itemsPrice,
@@ -125,6 +129,7 @@ const updateOrderToPaid = asyncHandler(async (req: Request, res: Response) => {
       id: order._id,
       orderItems: order.orderItems,
       user: order.user,
+      seller: order.seller,
       paymentMethod: order.paymentMethod,
       taxPrice: order.taxPrice,
       shippingPrice: order.shippingPrice,
@@ -158,6 +163,7 @@ const updateOrderToProcessed = asyncHandler(async (req: Request, res: Response) 
       id: order._id,
       orderItems: order.orderItems,
       user: order.user,
+      seller: order.seller,
       paymentMethod: order.paymentMethod,
       taxPrice: order.taxPrice,
       shippingPrice: order.shippingPrice,
@@ -176,11 +182,14 @@ const updateOrderToProcessed = asyncHandler(async (req: Request, res: Response) 
 // @route   GET /api/orders/:id/cancel
 // @access  Private/Admin
 const updateOrderToCancelled = asyncHandler(async (req: Request, res: Response) => {
+
+  const { cancelReason } = req.body
   const order = await Order.findById(req.params.id)
 
   if (order) {
     order.set({
       cancelledAt: Date.now(),
+      cancelReason,
       status: OrderStatus.Cancelled,
     });
 
@@ -191,6 +200,7 @@ const updateOrderToCancelled = asyncHandler(async (req: Request, res: Response) 
       id: order._id,
       orderItems: order.orderItems,
       user: order.user,
+      seller: order.seller,
       paymentMethod: order.paymentMethod,
       taxPrice: order.taxPrice,
       shippingPrice: order.shippingPrice,
@@ -209,6 +219,9 @@ const updateOrderToCancelled = asyncHandler(async (req: Request, res: Response) 
 // @route   GET /api/orders/:id/ship
 // @access  Private/Admin
 const updateOrderToShipped = asyncHandler(async (req: Request, res: Response) => {
+
+  const { receiptNumber } = req.body
+
   const order = await Order.findById(req.params.id)
 
   if (order) {
@@ -216,6 +229,7 @@ const updateOrderToShipped = asyncHandler(async (req: Request, res: Response) =>
       isDelivered: true,
       deliveredAt: Date.now(),
       shippedAt: Date.now(),
+      receiptNumber,
       status: OrderStatus.Shipped,
     });
 
@@ -225,6 +239,7 @@ const updateOrderToShipped = asyncHandler(async (req: Request, res: Response) =>
     new OrderShippedPublisher(natsWrapper.client).publish({
       id: order._id,
       user: order.user,
+      seller: order.seller,
       shippingAddress: order.shippingAddress,
       status: OrderStatus.Shipped,
     });
@@ -254,6 +269,7 @@ const updateOrderToReceived = asyncHandler(async (req: Request, res: Response) =
     new OrderReceivedPublisher(natsWrapper.client).publish({
       id: order._id,
       user: order.user,
+      seller: order.seller,
       shippingAddress: order.shippingAddress,
       status: OrderStatus.Received,
     });
@@ -269,11 +285,15 @@ const updateOrderToReceived = asyncHandler(async (req: Request, res: Response) =
 // @route   GET /api/orders/:id/return
 // @access  Private/Admin
 const updateOrderToReturned = asyncHandler(async (req: Request, res: Response) => {
+
+  const { returnReason } = req.body
+  console.log('Return reason: ' + returnReason)
   const order = await Order.findById(req.params.id)
 
   if (order) {
     order.set({
       returnedAt: Date.now(),
+      returnReason,
       status: OrderStatus.Returned,
     });
 
@@ -283,6 +303,7 @@ const updateOrderToReturned = asyncHandler(async (req: Request, res: Response) =
     new OrderReturnedPublisher(natsWrapper.client).publish({
       id: order._id,
       user: order.user,
+      seller: order.seller,
       shippingAddress: order.shippingAddress,
       status: OrderStatus.Received,
     });
@@ -312,6 +333,7 @@ const updateOrderToCompleted = asyncHandler(async (req: Request, res: Response) 
     new OrderCompletedPublisher(natsWrapper.client).publish({
       id: order._id,
       user: order.user,
+      seller: order.seller,
       orderItems: order.orderItems,
       shippingAddress: order.shippingAddress,
       status: OrderStatus.Completed,
@@ -352,6 +374,22 @@ const getMyOrdersByStatus = asyncHandler(async (req: Request, res: Response) => 
   res.json(orders)
 })
 
+// @desc    Get logged in user orders by status
+// @route   GET /api/orders/mystoreorders/:status
+// @access  Private
+const getMyStoreOrdersByStatus = asyncHandler(async (req: Request, res: Response) => {
+
+  token = req.headers.authorization!.split(' ')[1]
+  decoded = jwt.verify(token, process.env.JWT_SECRET!)
+
+  const orders = await Order.find({ $and: [{'seller._id': decoded.id}, {'status': req.params.status}] })
+    .sort({ createdAt : -1 })
+  
+  console.log('My store orders: ' + orders)
+  
+  res.json(orders)
+})
+
 // @desc    Get all orders
 // @route   GET /api/orders
 // @access  Private/Admin
@@ -372,5 +410,6 @@ export {
   updateOrderToCompleted,
   getMyOrders,
   getMyOrdersByStatus,
+  getMyStoreOrdersByStatus,
   getOrders,
 }

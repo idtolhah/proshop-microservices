@@ -12,12 +12,13 @@ let decoded: any
 const addCartItems = asyncHandler(async (req: Request, res: Response) => {
 
     const {
-        product,
-        name,
-        image,
-        price,
-        countInStock,
-        qty
+      product,
+      name,
+      image,
+      price,
+      countInStock,
+      qty,
+      seller,
     } = req.body
     
     token = req.headers.authorization!.split(' ')[1]
@@ -35,29 +36,18 @@ const addCartItems = asyncHandler(async (req: Request, res: Response) => {
       res.status(204).json(updatedCart)
     }else{
       const cart = new Cart({
-          user,
-          product,
-          name,
-          image,
-          price,
-          countInStock,
-          qty,
+        user,
+        product,
+        name,
+        image,
+        price,
+        countInStock,
+        qty,
+        seller,
       })
       const createdCart = await cart.save()
       res.status(201).json(createdCart)
     }
-
-    // Publish an event saying that an cart was created
-    // new CartCreatedPublisher(natsWrapper.client).publish({
-    //     id: cart.id,
-    //     user,
-    //     product,
-    //     name,
-    //     image,
-    //     price,
-    //     countInStock,
-    //     qty,
-    // });
 })
 
 // @desc    Get logged in user carts

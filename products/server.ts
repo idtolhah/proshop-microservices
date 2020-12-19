@@ -6,6 +6,7 @@ import mongoose from 'mongoose'
 import { notFound, errorHandler } from './common/middleware/errorMiddleware'
 import { natsWrapper } from './config/nats-wrapper'
 import productRoutes from './routes/productRoutes'
+import categoryRoutes from './routes/categoryRoutes'
 import uploadRoutes from './routes/uploadRoutes'
 import cors from 'cors'
 import { OrderCreatedListener } from './events/listeners/order-created-listener'
@@ -49,7 +50,7 @@ const start = async () => {
     new OrderCancelledListener(natsWrapper.client).listen();
     new OrderCompletedListener(natsWrapper.client).listen();
 
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGO_URI!, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
@@ -65,14 +66,15 @@ const start = async () => {
   }
   
   const app = express()
-  app.use(cors(corsOptions))
+  // app.use(cors(corsOptions))
 
   if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'))
+    // app.use(morgan('dev'))
   }
 
   app.use(express.json())
   app.use('/api/products', productRoutes)
+  app.use('/api/categories', categoryRoutes)
   app.use('/api/upload', uploadRoutes)
 
   const __dirname = path.resolve()
