@@ -42,8 +42,8 @@ const ShippingScreen = ({ history }) => {
             placeholder='Enter address'
             value={address}
             required
-            readOnly
-            // onChange={(e) => setAddress(e.target.value)}
+            // readOnly
+            onChange={(e) => setAddress(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
@@ -54,8 +54,8 @@ const ShippingScreen = ({ history }) => {
             placeholder='Enter city'
             value={city}
             required
-            readOnly
-            // onChange={(e) => setCity(e.target.value)}
+            // readOnly
+            onChange={(e) => setCity(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
@@ -66,8 +66,8 @@ const ShippingScreen = ({ history }) => {
             placeholder='Enter postal code'
             value={postalCode}
             required
-            readOnly
-            // onChange={(e) => setPostalCode(e.target.value)}
+            // readOnly
+            onChange={(e) => setPostalCode(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
@@ -78,8 +78,8 @@ const ShippingScreen = ({ history }) => {
             placeholder='Enter province'
             value={province}
             required
-            readOnly
-            // onChange={(e) => setProvince(e.target.value)}
+            // readOnly
+            onChange={(e) => setProvince(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
