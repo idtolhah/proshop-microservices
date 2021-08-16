@@ -1,7 +1,9 @@
 name: tests-carts
 
 on: 
-  pull_request
+  pull_request:
+    paths:
+      - 'carts/**'
   
 jobs:
   build:
