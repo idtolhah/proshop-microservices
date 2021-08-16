@@ -7,7 +7,7 @@ import { notFound, errorHandler } from './common/middleware/errorMiddleware'
 import { natsWrapper } from './config/nats-wrapper'
 import productRoutes from './routes/productRoutes'
 import categoryRoutes from './routes/categoryRoutes'
-import uploadRoutes from './routes/uploadRoutes'
+// import uploadRoutes from './routes/uploadRoutes'
 import cors from 'cors'
 import { OrderCreatedListener } from './events/listeners/order-created-listener'
 import { OrderCancelledListener } from './events/listeners/order-cancelled-listener'
@@ -75,7 +75,7 @@ const start = async () => {
   app.use(express.json())
   app.use('/api/products', productRoutes)
   app.use('/api/categories', categoryRoutes)
-  app.use('/api/upload', uploadRoutes)
+  // app.use('/api/upload', uploadRoutes)
 
   const __dirname = path.resolve()
   app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
