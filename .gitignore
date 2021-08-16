@@ -3,6 +3,9 @@
 # dependencies
 node_modules
 node_modules/
+db-volume
+db-pv
+istio
 /.pnp
 .pnp.js
 
