@@ -8,6 +8,7 @@ db-pv
 istio
 /.pnp
 .pnp.js
+.expo
 
 # testing
 /coverage
