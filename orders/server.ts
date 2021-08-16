@@ -11,7 +11,7 @@ import { ExpirationCompleteListener } from './events/listeners/expiration-comple
 
 const start = async () => {
 
-  console.log('starting up...');
+  console.log('orders starting up.....');
 
   dotenv.config()
 
