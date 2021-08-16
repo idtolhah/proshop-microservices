@@ -11,6 +11,8 @@ import { ExpirationCompleteListener } from './events/listeners/expiration-comple
 
 const start = async () => {
 
+  console.log('starting up...');
+
   dotenv.config()
 
   if (!process.env.JWT_KEY) {
