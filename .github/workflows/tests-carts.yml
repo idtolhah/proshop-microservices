@@ -1,4 +1,4 @@
-name: tests-users
+name: tests-carts
 
 on: 
   pull_request
