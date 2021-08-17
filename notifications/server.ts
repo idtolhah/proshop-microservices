@@ -18,6 +18,8 @@ import cors from 'cors'
 
 const start = async () => {
 
+  console.log('notifications starting up.....');
+
   dotenv.config()
 
   if (!process.env.JWT_KEY) {
