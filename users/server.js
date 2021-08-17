@@ -19,7 +19,7 @@ const corsOptions = {
 const app = express()
 
 // app.use(cors(corsOptions))
-console.log('starting up users...')
+console.log('starting up users....')
 
 if (process.env.NODE_ENV === 'development') {
   // app.use(morgan('dev'))
