@@ -50,3 +50,7 @@ spec:
             backend:
               serviceName: shop-carts-srv
               servicePort: 5000
+          - path: /?(.*)
+            backend:
+              serviceName: frontend-srv
+              servicePort: 3000
