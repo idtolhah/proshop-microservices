@@ -15,6 +15,8 @@ import { OrderCompletedListener } from './events/listeners/order-completed-liste
 
 const start = async () => {
 
+  console.log('Starting up....');
+
   dotenv.config()
 
   if (!process.env.JWT_KEY) {

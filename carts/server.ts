@@ -13,6 +13,8 @@ import { OrderCancelledListener } from './events/listeners/order-cancelled-liste
 
 const start = async () => {
 
+  console.log('Starting up....');
+
   dotenv.config()
 
   if (!process.env.JWT_KEY) {
