@@ -52,5 +52,5 @@ spec:
               servicePort: 5000
           - path: /?(.*)
             backend:
-              serviceName: frontend-srv
+              serviceName: shop-frontend-srv
               servicePort: 3000
