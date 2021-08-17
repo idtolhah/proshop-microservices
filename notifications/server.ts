@@ -18,7 +18,7 @@ import cors from 'cors'
 
 const start = async () => {
 
-  console.log('notifications starting up.....');
+  console.log('Starting up....');
 
   dotenv.config()
 
