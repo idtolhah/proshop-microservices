@@ -15,6 +15,13 @@ spec:
       containers:
         - name: shop-users
           image: tolhah/shop-users:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
           env:
             - name: MONGO_URI
               value: 'mongodb://shop-users-mongo-srv:27017/shop-users'

@@ -15,6 +15,13 @@ spec:
       containers:
         - name: shop-orders
           image: tolhah/shop-orders:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
