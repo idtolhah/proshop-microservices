@@ -10,8 +10,6 @@ import connectDB from './config/db'
 
 dotenv.config()
 
-connectDB()
-
 const importData = async () => {
   try {
     await Category.deleteMany({})
@@ -51,8 +49,10 @@ const destroyData = async () => {
   }
 }
 
-if (process.argv[2] === '-d') {
-  destroyData()
-} else {
-  importData()
-}
+connectDB().then(() => {
+  if (process.argv[2] === '-d') {
+    destroyData()
+  } else {
+    importData()
+  }
+})
