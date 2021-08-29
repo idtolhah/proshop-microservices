@@ -50,7 +50,7 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
       _id: decoded.id,
       name: decoded.name,
       email: decoded.email,
-      expoPushToken: decoded.expoPushToken,
+      expoPushToken: decoded.expoPushToken || 'ExponentPushToken[iII1F3OljzM6anDe0oydYG]',
     }
 
     const order = new Order({
