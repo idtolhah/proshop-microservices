@@ -18,7 +18,7 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
 
     // token = req.headers.authorization!.split(' ')[1]
     // decoded = jwt.verify(token, process.env.JWT_SECRET!)
-
+    console.log(JSON.stringify(req.params))
     const order = await Order.findById(req.params.id)
 
     // Create Snap API instance
