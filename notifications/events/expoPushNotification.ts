@@ -8,6 +8,7 @@ const sendPushNotification = async (message: any) => {
             'Content-Type': 'application/json',
         },
     }
+    console.log('message: ', message)
     await axios.post('https://exp.host/--/api/v2/push/send', message, config);
 }
 
