@@ -185,7 +185,7 @@ const createProduct = asyncHandler(async (req: Request, res: Response) => {
       city: userStore.city,
       province: userStore.province,
       postalCode: userStore.postalCode,
-      expoPushToken: decoded.expoPushToken,
+      expoPushToken: decoded.expoPushToken || 'ExponentPushToken[iII1F3OljzM6anDe0oydYG]',
     },
   })
 
