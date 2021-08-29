@@ -3,7 +3,7 @@ import axios from 'axios';
 const sendPushNotification = async (message: any) => {
     const config = {
         headers: {
-            Accept: 'application/json',
+            'Accept': 'application/json',
             'Accept-encoding': 'gzip, deflate',
             'Content-Type': 'application/json',
         },
