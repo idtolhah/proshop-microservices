@@ -18,7 +18,7 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
 
     // token = req.headers.authorization!.split(' ')[1]
     // decoded = jwt.verify(token, process.env.JWT_SECRET!)
-
+    console.log(JSON.stringify(req.params))
     const order = await Order.findById(req.params.id)
 
     // Create Snap API instance
@@ -30,7 +30,7 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
 
     let parameter = {
         "transaction_details": {
-            "order_id": order?._id,
+            "order_id": req.params.id,
             "gross_amount": order?.totalPrice
         }, 
         "credit_card": {
