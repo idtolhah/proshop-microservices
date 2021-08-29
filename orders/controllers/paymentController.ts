@@ -18,7 +18,7 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
 
     // token = req.headers.authorization!.split(' ')[1]
     // decoded = jwt.verify(token, process.env.JWT_SECRET!)
-    console.log(JSON.stringify(req.params))
+    console.log('req.params: ' + JSON.stringify(req.params))
     const order = await Order.findById(req.params.id)
 
     // Create Snap API instance
@@ -58,6 +58,7 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
 // @access  Private
 const acceptPaymentUpdate = asyncHandler(async (req: Request, res: Response) => {
 
+    console.log('req.body: ' + JSON.stringify(req.body))
     const order = await Order.findById(req.body.order_id)
 
     if (order) {
