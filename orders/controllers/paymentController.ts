@@ -30,7 +30,7 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
 
     let parameter = {
         "transaction_details": {
-            "order_id": order?._id,
+            "order_id": req.params.id,
             "gross_amount": order?.totalPrice
         }, 
         "credit_card": {
