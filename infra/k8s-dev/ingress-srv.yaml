@@ -26,10 +26,6 @@ spec:
             backend:
               serviceName: shop-products-srv
               servicePort: 5000
-          - path: /uploads/?(.*)
-            backend:
-              serviceName: shop-products-srv
-              servicePort: 5000
           - path: /api/orders/?(.*)
             backend:
               serviceName: shop-orders-srv

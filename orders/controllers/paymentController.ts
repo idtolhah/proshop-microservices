@@ -2,9 +2,10 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import Order from '../models/orderModel'
 import asyncHandler from 'express-async-handler'
-import { natsWrapper } from '../config/nats-wrapper';
+import { natsWrapper } from '../config/nats-wrapper'
 import { OrderStatus } from '@ta-shop-simple/common'
 import { OrderPaidPublisher } from '../events/publishers/order-paid-publisher'
+import { Order as OrderType } from '../types/order'
 
 const midtransClient = require('midtrans-client')
 
@@ -86,7 +87,7 @@ const acceptPaymentUpdate = asyncHandler(async (req: Request, res: Response) => 
         const updatedOrder = await order.save()
     
         // Publish an event saying that an order was paid
-        new OrderPaidPublisher(natsWrapper.client).publish(updatedOrder);
+        new OrderPaidPublisher(natsWrapper.client).publish(updatedOrder as OrderType);
     
         res.json(updatedOrder)
         

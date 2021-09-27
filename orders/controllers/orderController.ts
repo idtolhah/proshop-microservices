@@ -4,6 +4,7 @@ import asyncHandler from 'express-async-handler'
 import Order from '../models/orderModel'
 import { natsWrapper } from '../config/nats-wrapper';
 import { OrderStatus } from '@ta-shop-simple/common';
+import { Order as OrderType } from '../types/order';
 // publishers
 import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
 import { OrderPaidPublisher } from '../events/publishers/order-paid-publisher';
@@ -70,7 +71,7 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
     const createdOrder = await order.save()
 
     // Publish an event saying that an order was created
-    new OrderCreatedPublisher(natsWrapper.client).publish(createdOrder);
+    new OrderCreatedPublisher(natsWrapper.client).publish(createdOrder as OrderType);
 
     res.status(201).json(createdOrder)
   }
@@ -112,7 +113,7 @@ const updateOrderToPaid = asyncHandler(async (req: Request, res: Response) => {
     const updatedOrder = await order.save()
 
     // Publish an event saying that an order was paid
-    new OrderPaidPublisher(natsWrapper.client).publish(updatedOrder);
+    new OrderPaidPublisher(natsWrapper.client).publish(updatedOrder as OrderType);
 
     res.json(updatedOrder)
   } else {
@@ -136,7 +137,7 @@ const updateOrderToProcessed = asyncHandler(async (req: Request, res: Response) 
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was processed
-    new OrderProcessedPublisher(natsWrapper.client).publish(updatedOrder)
+    new OrderProcessedPublisher(natsWrapper.client).publish(updatedOrder as OrderType)
 
     res.json(updatedOrder)
   } else {
@@ -163,7 +164,7 @@ const updateOrderToCancelled = asyncHandler(async (req: Request, res: Response) 
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was cancelled
-    new OrderCancelledPublisher(natsWrapper.client).publish(updatedOrder);
+    new OrderCancelledPublisher(natsWrapper.client).publish(updatedOrder as OrderType);
 
     res.json(updatedOrder)
   } else {
@@ -193,7 +194,7 @@ const updateOrderToShipped = asyncHandler(async (req: Request, res: Response) =>
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was shipped
-    new OrderShippedPublisher(natsWrapper.client).publish(updatedOrder);
+    new OrderShippedPublisher(natsWrapper.client).publish(updatedOrder as OrderType);
 
     res.json(updatedOrder)
   } else {
@@ -217,7 +218,7 @@ const updateOrderToReceived = asyncHandler(async (req: Request, res: Response) =
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was shipped
-    new OrderReceivedPublisher(natsWrapper.client).publish(updatedOrder);
+    new OrderReceivedPublisher(natsWrapper.client).publish(updatedOrder as OrderType);
 
     res.json(updatedOrder)
   } else {
@@ -245,7 +246,7 @@ const updateOrderToReturned = asyncHandler(async (req: Request, res: Response) =
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was shipped
-    new OrderReturnedPublisher(natsWrapper.client).publish(updatedOrder);
+    new OrderReturnedPublisher(natsWrapper.client).publish(updatedOrder as OrderType);
 
     res.json(updatedOrder)
   } else {
@@ -269,7 +270,7 @@ const updateOrderToCompleted = asyncHandler(async (req: Request, res: Response) 
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was shipped
-    new OrderCompletedPublisher(natsWrapper.client).publish(updatedOrder);
+    new OrderCompletedPublisher(natsWrapper.client).publish(updatedOrder as OrderType);
 
     res.json(updatedOrder)
   } else {
