@@ -9,7 +9,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
   async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
     data.orderItems.forEach(async item => {
-      const product = await Product.findById(item.product)
+      const product = await Product.findById(item.productId)
       if(product){
         product.countInStock = product.countInStock - item.qty
         await product.save();

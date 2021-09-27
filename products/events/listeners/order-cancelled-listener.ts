@@ -9,7 +9,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
 
   async onMessage(data: OrderCancelledEvent['data'], msg: Message) {
     data.orderItems.forEach(async item => {
-      const product = await Product.findById(item.product)
+      const product = await Product.findById(item.productId)
       if(product){
         product.countInStock = product.countInStock + item.qty
         await product.save();

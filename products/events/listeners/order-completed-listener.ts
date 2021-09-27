@@ -9,7 +9,7 @@ export class OrderCompletedListener extends Listener<OrderCompletedEvent> {
 
   async onMessage(data: OrderCompletedEvent['data'], msg: Message) {
     data.orderItems.forEach(async item => {
-      const product = await Product.findById(item.product)
+      const product = await Product.findById(item.productId)
       if(product){
         product.numSold += item.qty
         await product.save();
