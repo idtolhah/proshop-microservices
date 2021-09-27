@@ -8,9 +8,6 @@ import { natsWrapper } from './config/nats-wrapper';
 import favoriteRoutes from './routes/favoriteRoutes'
 import cors from 'cors'
 import { ProductUpdatedListener } from './events/listeners/product-updated-listener'
-import { OrderCreatedListener } from './events/listeners/order-created-listener'
-import { OrderCancelledListener } from './events/listeners/order-cancelled-listener'
-import { OrderCompletedListener } from './events/listeners/order-completed-listener'
 
 const start = async () => {
 
@@ -48,9 +45,6 @@ const start = async () => {
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     new ProductUpdatedListener(natsWrapper.client).listen();
-    new OrderCreatedListener(natsWrapper.client).listen();
-    new OrderCancelledListener(natsWrapper.client).listen();
-    new OrderCompletedListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI!, {
       useNewUrlParser: true,

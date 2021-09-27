@@ -1,5 +1,5 @@
 import { Message } from 'node-nats-streaming';
-import { Listener, OrderCancelledEvent, Subjects } from '@ta-shop/common';
+import { Listener, OrderCancelledEvent, Subjects } from '@ta-shop-simple/common';
 import { queueGroupName } from './queue-group-name';
 import Notification from '../../models/notificationModel';
 import sendPushNotification from '../expoPushNotification';
@@ -12,29 +12,25 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
     console.log('notification data: ' + JSON.stringify(data))
     const notification = new Notification({
       content: 'Pesanaan Anda telah dibatalkan.',
-      user: {
-        _id: data.user._id,
-      },
+      userId:  data.userId,
       link: '/order/' + data.id,
     });
     await notification.save();
 
     const notification2 = new Notification({
       content: `Pesanaan dengan Order ID: ${data.id} telah dibatalkan.`,
-      user: {
-        _id: data.seller._id,
-      },
+      userId: data.sellerId,
       link: '/order/' + data.id,
     });
     await notification2.save();
 
-    const message = {
-      to: data.seller.expoPushToken,
-      sound: 'default',
-      title: 'Order Notification',
-      body: `Pesanaan dengan Order ID: ${data.id} telah dibatalkan.`,
-    }
-    await sendPushNotification(message)
+    // const message = {
+    //   to: data.seller.expoPushToken,
+    //   sound: 'default',
+    //   title: 'Order Notification',
+    //   body: `Pesanaan dengan Order ID: ${data.id} telah dibatalkan.`,
+    // }
+    // await sendPushNotification(message)
 
     msg.ack();
   }

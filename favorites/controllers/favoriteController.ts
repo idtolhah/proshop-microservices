@@ -15,15 +15,15 @@ const getFavorites = asyncHandler(async (req, res) => {
   const pageSize = 6
   const page = Number(req.query.pageNumber) || 1
 
-  const count = await Favorite.countDocuments({ 'user._id': decoded.id })
-  const data = await Favorite.find({ 'user._id': decoded.id })
+  const count = await Favorite.countDocuments({ 'userId': decoded.id })
+  const data = await Favorite.find({ 'userId': decoded.id })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
     .sort({ createdAt : -1 })
 
   let favorites: any[] = []
   data.forEach(item => {
-    favorites.push(item.product)
+    favorites.push(item.productId)
   });
 
   res.json({ favorites, page, pages: Math.ceil(count / pageSize) })
@@ -36,10 +36,10 @@ const getAllFavoriteProductIds = asyncHandler(async (req, res) => {
   token = req.headers.authorization!.split(' ')[1]
   decoded = jwt.verify(token, process.env.JWT_SECRET!)
 
-  const data = await Favorite.find({ 'user._id': decoded.id }, {'product._id':1, _id:0})
+  const data = await Favorite.find({ 'userId': decoded.id }, {'productId':1, _id:0})
   let favorites: string[] = []
   data.forEach(item => {
-    favorites.push(item.product._id)  
+    favorites.push(item.productId)
   });
 
   res.json({ favorites })
@@ -52,12 +52,12 @@ const toggleFavorite = asyncHandler(async (req, res) => {
   token = req.headers.authorization!.split(' ')[1]
   decoded = jwt.verify(token, process.env.JWT_SECRET!)
 
-  const { product } = req.body
+  const { productId } = req.body
   
   const favorite = await Favorite.findOne({
     $and: [
-      { 'user._id': decoded.id }, 
-      { 'product._id': req.params.id }
+      { 'userId': decoded.id }, 
+      { 'productId': req.params.id }
     ]
   })
 
@@ -66,11 +66,8 @@ const toggleFavorite = asyncHandler(async (req, res) => {
     res.json({ message: 'Favorite removed' })
   } else {
     const favorite = new Favorite({
-        user: {
-          _id: decoded.id,
-          name: decoded.name,
-        },
-        product,
+        userId: decoded.id,
+        productId,
     })
     const createdFavorite = await favorite.save()
     res.status(201).json(createdFavorite)

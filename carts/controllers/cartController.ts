@@ -11,24 +11,16 @@ let decoded: any
 // @access  Private
 const addCartItems = asyncHandler(async (req: Request, res: Response) => {
 
-    const {
-      product,
-      name,
-      image,
-      price,
-      countInStock,
-      qty,
-      seller,
-    } = req.body
+    const { productId, qty } = req.body
     
     token = req.headers.authorization!.split(' ')[1]
     decoded = jwt.verify(token, process.env.JWT_SECRET!)
 
     const user = {
-        _id: decoded.id,
+        _id: decoded.id
     }
 
-    const existingCart = await Cart.findOne({ $and: [{'user._id': decoded.id}, {'product': product}] })
+    const existingCart = await Cart.findOne({ $and: [{'userId': decoded.id}, {'productId': productId}] })
 
     if(existingCart){
       existingCart.qty += qty
@@ -37,13 +29,8 @@ const addCartItems = asyncHandler(async (req: Request, res: Response) => {
     }else{
       const cart = new Cart({
         user,
-        product,
-        name,
-        image,
-        price,
-        countInStock,
-        qty,
-        seller,
+        productId,
+        qty
       })
       const createdCart = await cart.save()
       res.status(201).json(createdCart)
@@ -72,9 +59,7 @@ const getMyCarts = asyncHandler(async (req: Request, res: Response) => {
 // @route   PUT /api/carts/:id
 // @access  Private/Admin
 const updateCartItems = asyncHandler(async (req, res) => {
-    const {
-      qty
-    } = req.body
+    const { qty } = req.body
   
     const cart = await Cart.findById(req.params.id)
   

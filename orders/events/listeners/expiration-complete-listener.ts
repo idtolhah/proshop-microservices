@@ -3,7 +3,7 @@ import {
   Subjects,
   ExpirationCompleteEvent,
   OrderStatus,
-} from '@ta-shop/common';
+} from '@ta-shop-simple/common';
 import { Message } from 'node-nats-streaming';
 import { queueGroupName } from './queue-group-name';
 import { OrderCancelledPublisher } from '../publishers/order-cancelled-publisher';
@@ -31,17 +31,7 @@ export class ExpirationCompleteListener extends Listener<
       status: OrderStatus.Cancelled,
     });
     await order.save();
-    await new OrderCancelledPublisher(this.client).publish({
-      id: order._id,
-      orderItems: order.orderItems,
-      user: order.user,
-      seller: order.seller,
-      paymentMethod: order.paymentMethod,
-      taxPrice: order.taxPrice,
-      shippingPrice: order.shippingPrice,
-      totalPrice: order.totalPrice,
-      status: OrderStatus.Cancelled,
-    });
+    await new OrderCancelledPublisher(this.client).publish(order);
 
     msg.ack();
   }

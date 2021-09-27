@@ -1,14 +1,9 @@
 import mongoose from 'mongoose'
 
-const User = {
-  _id: String,
-  name: String,
-}
-
 const notificationSchema = new mongoose.Schema(
   {
-    user: {
-      type: User,
+    userId: {
+      type: String,
       required: true,
     },
     content: {

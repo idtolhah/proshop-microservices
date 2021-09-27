@@ -1,5 +1,5 @@
 import { Message } from 'node-nats-streaming';
-import { Listener, OrderCompletedEvent, Subjects } from '@ta-shop/common';
+import { Listener, OrderCompletedEvent, Subjects } from '@ta-shop-simple/common';
 import { queueGroupName } from './queue-group-name';
 import Product from '../../models/productModel';
 
@@ -8,7 +8,6 @@ export class OrderCompletedListener extends Listener<OrderCompletedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: OrderCompletedEvent['data'], msg: Message) {
-
     data.orderItems.forEach(async item => {
       const product = await Product.findById(item.product)
       if(product){

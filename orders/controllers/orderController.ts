@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import asyncHandler from 'express-async-handler'
 import Order from '../models/orderModel'
 import { natsWrapper } from '../config/nats-wrapper';
-import { OrderStatus } from '@ta-shop/common';
+import { OrderStatus } from '@ta-shop-simple/common';
 // publishers
 import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
 import { OrderPaidPublisher } from '../events/publishers/order-paid-publisher';
@@ -24,8 +24,8 @@ const EXPIRATION_WINDOW_SECONDS = 1 * 60;
 const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
   const {
     orderItems,
-    seller,
-    shippingAddress,
+    sellerId,
+    shippingAddressId,
     paymentMethod,
     itemsPrice,
     taxPrice,
@@ -46,7 +46,7 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
     const expiration = new Date();
     expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
 
-    const user = {
+    const userId = {
       _id: decoded.id,
       name: decoded.name,
       email: decoded.email,
@@ -55,9 +55,9 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
 
     const order = new Order({
       orderItems,
-      user,
-      seller,
-      shippingAddress,
+      userId,
+      sellerId,
+      shippingAddressId,
       paymentMethod,
       itemsPrice,
       taxPrice,
@@ -70,20 +70,7 @@ const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
     const createdOrder = await order.save()
 
     // Publish an event saying that an order was created
-    new OrderCreatedPublisher(natsWrapper.client).publish({
-      id: order.id || '',
-      orderItems,
-      user,
-      seller,
-      shippingAddress,
-      paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
-      status: OrderStatus.Created,
-      expiresAt: expiration,
-    });
+    new OrderCreatedPublisher(natsWrapper.client).publish(createdOrder);
 
     res.status(201).json(createdOrder)
   }
@@ -125,17 +112,7 @@ const updateOrderToPaid = asyncHandler(async (req: Request, res: Response) => {
     const updatedOrder = await order.save()
 
     // Publish an event saying that an order was paid
-    new OrderPaidPublisher(natsWrapper.client).publish({
-      id: order._id,
-      orderItems: order.orderItems,
-      user: order.user,
-      seller: order.seller,
-      paymentMethod: order.paymentMethod,
-      taxPrice: order.taxPrice,
-      shippingPrice: order.shippingPrice,
-      totalPrice: order.totalPrice,
-      status: OrderStatus.Paid,
-    });
+    new OrderPaidPublisher(natsWrapper.client).publish(updatedOrder);
 
     res.json(updatedOrder)
   } else {
@@ -159,17 +136,7 @@ const updateOrderToProcessed = asyncHandler(async (req: Request, res: Response) 
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was processed
-    new OrderProcessedPublisher(natsWrapper.client).publish({
-      id: order._id,
-      orderItems: order.orderItems,
-      user: order.user,
-      seller: order.seller,
-      paymentMethod: order.paymentMethod,
-      taxPrice: order.taxPrice,
-      shippingPrice: order.shippingPrice,
-      totalPrice: order.totalPrice,
-      status: OrderStatus.Processed,
-    })
+    new OrderProcessedPublisher(natsWrapper.client).publish(updatedOrder)
 
     res.json(updatedOrder)
   } else {
@@ -196,17 +163,7 @@ const updateOrderToCancelled = asyncHandler(async (req: Request, res: Response) 
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was cancelled
-    new OrderCancelledPublisher(natsWrapper.client).publish({
-      id: order._id,
-      orderItems: order.orderItems,
-      user: order.user,
-      seller: order.seller,
-      paymentMethod: order.paymentMethod,
-      taxPrice: order.taxPrice,
-      shippingPrice: order.shippingPrice,
-      totalPrice: order.totalPrice,
-      status: OrderStatus.Cancelled,
-    });
+    new OrderCancelledPublisher(natsWrapper.client).publish(updatedOrder);
 
     res.json(updatedOrder)
   } else {
@@ -236,13 +193,7 @@ const updateOrderToShipped = asyncHandler(async (req: Request, res: Response) =>
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was shipped
-    new OrderShippedPublisher(natsWrapper.client).publish({
-      id: order._id,
-      user: order.user,
-      seller: order.seller,
-      shippingAddress: order.shippingAddress,
-      status: OrderStatus.Shipped,
-    });
+    new OrderShippedPublisher(natsWrapper.client).publish(updatedOrder);
 
     res.json(updatedOrder)
   } else {
@@ -266,13 +217,7 @@ const updateOrderToReceived = asyncHandler(async (req: Request, res: Response) =
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was shipped
-    new OrderReceivedPublisher(natsWrapper.client).publish({
-      id: order._id,
-      user: order.user,
-      seller: order.seller,
-      shippingAddress: order.shippingAddress,
-      status: OrderStatus.Received,
-    });
+    new OrderReceivedPublisher(natsWrapper.client).publish(updatedOrder);
 
     res.json(updatedOrder)
   } else {
@@ -300,13 +245,7 @@ const updateOrderToReturned = asyncHandler(async (req: Request, res: Response) =
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was shipped
-    new OrderReturnedPublisher(natsWrapper.client).publish({
-      id: order._id,
-      user: order.user,
-      seller: order.seller,
-      shippingAddress: order.shippingAddress,
-      status: OrderStatus.Received,
-    });
+    new OrderReturnedPublisher(natsWrapper.client).publish(updatedOrder);
 
     res.json(updatedOrder)
   } else {
@@ -330,14 +269,7 @@ const updateOrderToCompleted = asyncHandler(async (req: Request, res: Response) 
     const updatedOrder = await order.save()
     
     // Publish an event saying that an order was shipped
-    new OrderCompletedPublisher(natsWrapper.client).publish({
-      id: order._id,
-      user: order.user,
-      seller: order.seller,
-      orderItems: order.orderItems,
-      shippingAddress: order.shippingAddress,
-      status: OrderStatus.Completed,
-    });
+    new OrderCompletedPublisher(natsWrapper.client).publish(updatedOrder);
 
     res.json(updatedOrder)
   } else {
@@ -346,7 +278,7 @@ const updateOrderToCompleted = asyncHandler(async (req: Request, res: Response) 
   }
 })
 
-// @desc    Get logged in user orders
+// @desc    Get logged in userId orders
 // @route   GET /api/orders/myorders
 // @access  Private
 const getMyOrders = asyncHandler(async (req: Request, res: Response) => {
@@ -354,13 +286,13 @@ const getMyOrders = asyncHandler(async (req: Request, res: Response) => {
   token = req.headers.authorization!.split(' ')[1]
   decoded = jwt.verify(token, process.env.JWT_SECRET!)
 
-  const orders = await Order.find({ 'user._id': decoded.id })
+  const orders = await Order.find({ 'userId._id': decoded.id })
     .sort({ createdAt : -1 })
 
   res.json(orders)
 })
 
-// @desc    Get logged in user orders by status
+// @desc    Get logged in userId orders by status
 // @route   GET /api/orders/myorders/:status
 // @access  Private
 const getMyOrdersByStatus = asyncHandler(async (req: Request, res: Response) => {
@@ -368,13 +300,13 @@ const getMyOrdersByStatus = asyncHandler(async (req: Request, res: Response) => 
   token = req.headers.authorization!.split(' ')[1]
   decoded = jwt.verify(token, process.env.JWT_SECRET!)
 
-  const orders = await Order.find({ $and: [{'user._id': decoded.id}, {'status': req.params.status}] })
+  const orders = await Order.find({ $and: [{'userId._id': decoded.id}, {'status': req.params.status as OrderStatus}] })
     .sort({ createdAt : -1 })
   
   res.json(orders)
 })
 
-// @desc    Get logged in user orders by status
+// @desc    Get logged in userId orders by status
 // @route   GET /api/orders/mystoreorders/:status
 // @access  Private
 const getMyStoreOrdersByStatus = asyncHandler(async (req: Request, res: Response) => {
@@ -382,7 +314,7 @@ const getMyStoreOrdersByStatus = asyncHandler(async (req: Request, res: Response
   token = req.headers.authorization!.split(' ')[1]
   decoded = jwt.verify(token, process.env.JWT_SECRET!)
 
-  const orders = await Order.find({ $and: [{'seller._id': decoded.id}, {'status': req.params.status}] })
+  const orders = await Order.find({ $and: [{'sellerId._id': decoded.id}, {'status': req.params.status as OrderStatus}] })
     .sort({ createdAt : -1 })
   
   console.log('My store orders: ' + orders)

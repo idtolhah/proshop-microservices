@@ -1,36 +1,7 @@
 import { Subjects } from './subjects';
-import { OrderStatus } from './types/order-status';
+import { Order } from './types/order';
 
 export interface OrderShippedEvent {
   subject: Subjects.OrderShipped;
-  data: {
-    id: string;
-    user: {
-      _id: string;
-      name: string;
-      email: string;
-      expoPushToken: string,
-    };
-    seller: {
-      _id: string;
-      storeName: string;
-      phoneNumber: string;
-      address: string;
-      subdistrict: string;
-      city: string;
-      province: string;
-      postalCode: string;
-      expoPushToken: string,
-    };
-    shippingAddress: {
-      name: string;
-      phoneNumber: string;
-      address: string;
-      subdistrict: string;
-      city: string;
-      province: string;
-      postalCode: string;
-    };
-    status: OrderStatus;
-  };
+  data: Order;
 }

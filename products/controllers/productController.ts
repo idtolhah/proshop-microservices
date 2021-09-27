@@ -227,7 +227,7 @@ const updateProduct = asyncHandler(async (req: Request, res: Response) => {
 
     new ProductUpdatedPublisher(natsWrapper.client).publish({
       id: req.params.id,
-      userId: product.user._id,
+      userId: product.userId,
       name: product.name,
       image: product.image,
       price: product.price,
@@ -255,7 +255,7 @@ const createProductReview = asyncHandler(async (req: Request, res: Response) => 
 
   if (product) {
     const alreadyReviewed = product.reviews.find(
-      (r) => r.user.toString() === decoded.id.toString()
+      (r) => r.userId === decoded.id.toString()
     )
 
     if (alreadyReviewed) {
@@ -267,7 +267,7 @@ const createProductReview = asyncHandler(async (req: Request, res: Response) => 
       name: decoded.name,
       rating: Number(rating),
       comment,
-      user: decoded.id,
+      userId: decoded.id,
     }
 
     product.reviews.push(review)

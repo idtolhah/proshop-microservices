@@ -20,7 +20,7 @@ const importData = async () => {
     })
     
     const sampleProducts = products.map((product) => {
-      return { ...product, user: { _id: "5f9075db7c2ac74c5d1cda5b" } }
+      return { ...product, userId: "5f9075db7c2ac74c5d1cda5b" } 
     })
 
     await Category.insertMany(sampleCategories)

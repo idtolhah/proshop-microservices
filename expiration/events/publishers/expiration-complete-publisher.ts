@@ -2,7 +2,7 @@ import {
   Subjects,
   Publisher,
   ExpirationCompleteEvent,
-} from '@ta-shop/common';
+} from '@ta-shop-simple/common';
 
 export class ExpirationCompletePublisher extends Publisher<
   ExpirationCompleteEvent

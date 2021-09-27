@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import Order from '../models/orderModel'
 import asyncHandler from 'express-async-handler'
 import { natsWrapper } from '../config/nats-wrapper';
-import { OrderStatus } from '@ta-shop/common'
+import { OrderStatus } from '@ta-shop-simple/common'
 import { OrderPaidPublisher } from '../events/publishers/order-paid-publisher'
 
 const midtransClient = require('midtrans-client')
@@ -37,10 +37,10 @@ const requestToken = asyncHandler(async (req: Request, res: Response) => {
             "secure" : true
         },
         "customer_details": {
-            "first_name": order?.user.name,
-            "last_name": "",
-            "email": order?.user.email,
-            "phone": order?.shippingAddress.phoneNumber,
+            "first_name": req.params.first_name,    // perlu dibuatkan val dari key
+            "last_name": req.params.last_name,  // perlu dibuatkan val dari key
+            "email": req.params.email,  // perlu dibuatkan val dari key
+            "phone": req.params.phone,  // perlu dibuatkan val dari key
         }
     };
 
@@ -78,7 +78,7 @@ const acceptPaymentUpdate = asyncHandler(async (req: Request, res: Response) => 
                 id: order._id,
                 status: req.body.transaction_status,
                 update_time: req.body.transaction_time,
-                email_address: order.user.email,
+                email_address: req.body.email_address, // perlu dibuatkan val dari key
             },
             status,
         });
@@ -86,17 +86,7 @@ const acceptPaymentUpdate = asyncHandler(async (req: Request, res: Response) => 
         const updatedOrder = await order.save()
     
         // Publish an event saying that an order was paid
-        new OrderPaidPublisher(natsWrapper.client).publish({
-            id: order._id,
-            orderItems: order.orderItems,
-            user: order.user,
-            seller: order.seller,
-            paymentMethod: order.paymentMethod,
-            taxPrice: order.taxPrice,
-            shippingPrice: order.shippingPrice,
-            totalPrice: order.totalPrice,
-            status,
-        });
+        new OrderPaidPublisher(natsWrapper.client).publish(updatedOrder);
     
         res.json(updatedOrder)
         

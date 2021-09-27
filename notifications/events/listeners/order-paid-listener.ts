@@ -1,5 +1,5 @@
 import { Message } from 'node-nats-streaming';
-import { Listener, OrderPaidEvent, Subjects } from '@ta-shop/common';
+import { Listener, OrderPaidEvent, Subjects } from '@ta-shop-simple/common';
 import { queueGroupName } from './queue-group-name';
 import Notification from '../../models/notificationModel';
 
@@ -10,9 +10,7 @@ export class OrderPaidListener extends Listener<OrderPaidEvent> {
   async onMessage(data: OrderPaidEvent['data'], msg: Message) {
     const notification = new Notification({
       content: 'Yeah! Pembayaran Anda telah masuk.',
-      user: {
-        _id: data.user._id,
-      },
+      userId:  data.userId,
       link: '/order/' + data.id,
     });
 
