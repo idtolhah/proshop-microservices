@@ -32,7 +32,7 @@ spec:
             - name: NATS_CLUSTER_ID
               value: shop
             - name: MONGO_URI
-              value: 'mongodb://shop-products-mongo-srv:27017/shop-products'
+              value: 'mongodb://shop-db-mongo-srv:27017/shop-database'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

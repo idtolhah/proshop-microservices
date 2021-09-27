@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shop-users-mongo-depl
+  name: shop-db-mongo-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: shop-users-mongo
+      app: shop-db-mongo
   template:
     metadata:
       labels:
-        app: shop-users-mongo
+        app: shop-db-mongo
     spec:
       containers:
-        - name: shop-users-mongo
+        - name: shop-db-mongo
           image: mongo
           # resources:
           #   requests:
@@ -26,10 +26,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: shop-users-mongo-srv
+  name: shop-db-mongo-srv
 spec:
   selector:
-    app: shop-users-mongo
+    app: shop-db-mongo
   ports:
     - name: db
       protocol: TCP

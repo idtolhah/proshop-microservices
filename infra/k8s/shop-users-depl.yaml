@@ -24,7 +24,7 @@ spec:
           #     cpu: "200m"
           env:
             - name: MONGO_URI
-              value: 'mongodb://shop-users-mongo-srv:27017/shop-users'
+              value: 'mongodb://shop-db-mongo-srv:27017/shop-database'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
