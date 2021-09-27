@@ -9,7 +9,6 @@ import cartRoutes from './routes/cartRoutes'
 import cors from 'cors'
 import { ProductUpdatedListener } from './events/listeners/product-updated-listener'
 import { OrderCreatedListener } from './events/listeners/order-created-listener'
-import { OrderCancelledListener } from './events/listeners/order-cancelled-listener'
 
 const start = async () => {
 
@@ -48,7 +47,6 @@ const start = async () => {
 
     new ProductUpdatedListener(natsWrapper.client).listen();
     new OrderCreatedListener(natsWrapper.client).listen();
-    new OrderCancelledListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI!, {
       useNewUrlParser: true,
