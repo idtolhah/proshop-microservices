@@ -24,6 +24,9 @@ istio
 .env.test.local
 .env.production.local
 
+*.crt
+*.key
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
